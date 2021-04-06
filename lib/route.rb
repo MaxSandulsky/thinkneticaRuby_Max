@@ -1,5 +1,7 @@
 class Route
-  def initialize
-    
+  attr_reader :stations
+  def initialize(*stations)
+    @stations = stations
   end
+  
 end
