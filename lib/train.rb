@@ -53,5 +53,5 @@ class Train
       puts "Oops! Wrong direction!"
     end
   end
-  
+
 end
