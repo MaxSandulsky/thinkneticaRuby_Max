@@ -1,7 +1,8 @@
 class Train
   attr_reader :speed
   attr_reader :vagons
-    attr_reader :number
+  attr_reader :number
+  attr_reader :type
   def initialize(number, type, vagons)
     @number, @type, @vagons, @trainroutepassed = number, type, vagons, []
   end
@@ -29,7 +30,7 @@ class Train
     @trainroute.first.arrivingtrain(self)
   end
   
-  def stationinfo #add
+  def stationinfo
     if @trainroutepassed.length != 0
     puts "last st: #{@trainroutepassed.last.title}"
     end
@@ -45,7 +46,7 @@ class Train
       @trainroutepassed.push(@trainroute.first)
       @trainroute.shift
       @trainroute.first.arrivingtrain(self)
-    elsif @trainroutepassed.length != 0 && @trainroutepassed == "backward"
+    elsif @trainroutepassed.length != 0 && direction == "backward"
       @trainroute.first.departuretrain(self)
       @trainroute.unshift(@trainroutepassed.last)
       @trainroutepassed.pop

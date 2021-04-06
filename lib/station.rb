@@ -16,4 +16,9 @@ class Station
   def departuretrain(train) 
     @trains.delete(train)
   end
+  
+  def getsortedlist(sortby)
+    temporalarr = @trains.select { |x| x.type == sortby}
+    temporalarr.length
+  end
 end

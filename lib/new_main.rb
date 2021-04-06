@@ -19,9 +19,10 @@ someTrain.trainroute = someRoute
 someTrain.move("forward")
 end
 
-someTrain.stationinfo
+2.times do
+someTrain.move("backward")
+end
 
-someStation1.trains
-someStation2.trains
-someStation3.trains
-someStation4.trains
+puts "#{someStation2.getsortedlist("Cargo")}"
+
+#someTrain.stationinfo
