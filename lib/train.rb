@@ -4,7 +4,7 @@ class Train
   attr_reader :number
   attr_reader :type
   def initialize(number, type, vagons)
-    @number, @type, @vagons, @trainroutepassed = number, type, vagons, []
+    @number, @type, @vagons = number, type, vagons
   end
 
   def vagonchange(function)
@@ -27,30 +27,28 @@ class Train
   
   def trainroute=(route)
     @trainroute = route.stations
-    @trainroute.first.arrivingtrain(self)
+    @currentstation = 0
   end
   
   def stationinfo
-    if @trainroutepassed.length != 0
-    puts "last st: #{@trainroutepassed.last.title}"
+    if @currentstation > 0
+    puts "last st: #{@trainroute[@currentstation - 1].title}"
     end
-    puts "Current st: #{@trainroute.first.title}"
-    if @trainroute.length != 1
-    puts "Next st: #{@trainroute[1].title}"
+    puts "Current st: #{@trainroute[@currentstation].title}"
+    if @trainroute.length != @currentstation + 1 && @trainroute.length > 0
+    puts "Next st: #{@trainroute[@currentstation + 1].title}"
     end
   end
   
   def move(direction)
     if @trainroute.length != 1 && direction == "forward"
-      @trainroute.first.departuretrain(self)
-      @trainroutepassed.push(@trainroute.first)
-      @trainroute.shift
-      @trainroute.first.arrivingtrain(self)
-    elsif @trainroutepassed.length != 0 && direction == "backward"
-      @trainroute.first.departuretrain(self)
-      @trainroute.unshift(@trainroutepassed.last)
-      @trainroutepassed.pop
-      @trainroute.first.arrivingtrain(self)
+      @trainroute[@currentstation].departuretrain(self)
+      @currentstation += 1
+      @trainroute[@currentstation].arrivingtrain(self)
+    elsif @trainroute.length != 0 && direction == "backward"
+      @trainroute[@currentstation].departuretrain(self)
+      @currentstation -= 1
+      @trainroute[@currentstation].arrivingtrain(self)
     else
       puts "Oops! Wrong direction!"
     end
