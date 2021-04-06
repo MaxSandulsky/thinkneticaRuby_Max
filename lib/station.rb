@@ -18,7 +18,6 @@ class Station
   end
   
   def getsortedlist(sortby)
-    temporalarr = @trains.select { |x| x.type == sortby}
-    temporalarr.length
+    @trains.select { |train| train.type == sortby}
   end
 end

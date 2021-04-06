@@ -41,7 +41,7 @@ class Train
   end
   
   def move(direction)
-    if @trainroute.length != 0 && direction == "forward"
+    if @trainroute.length != 1 && direction == "forward"
       @trainroute.first.departuretrain(self)
       @trainroutepassed.push(@trainroute.first)
       @trainroute.shift

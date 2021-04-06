@@ -3,26 +3,34 @@ load 'route.rb'
 load 'train.rb'
 
 
-someStation1 = Station.new("someTitle1")
-someStation2 = Station.new("someTitle2")
-someStation3 = Station.new("someTitle3")
-someStation4 = Station.new("someTitle4")
+somestation1 = Station.new("someTitle1")
+somestation2 = Station.new("someTitle2")
+somestation3 = Station.new("someTitle3")
+somestation4 = Station.new("someTitle4")
 
-someTrain = Train.new(127055, "Cargo", 4)
-someTrain.vagonchange("increase")
+sometrain = Train.new(127055, "Cargo", 4)
+anothertrain = Train.new(354000, "Cargo", 8)
+sometrain.vagonchange("increase")
 
-someRoute = Route.new(someStation1, someStation2, someStation3, someStation4)
+someroute = Route.new(somestation1, somestation2, somestation3, somestation4)
+anotherroute = Route.new(somestation4, somestation2)
 
-someTrain.trainroute = someRoute
+anotherroute.stations.each { |n|  puts "#{n.title}"}
+
+sometrain.trainroute = someroute
+anothertrain.trainroute = anotherroute
 
 3.times do
-someTrain.move("forward")
+sometrain.move("forward")
 end
+
+anothertrain.move("forward")
 
 2.times do
-someTrain.move("backward")
+sometrain.move("backward")
 end
 
-puts "#{someStation2.getsortedlist("Cargo")}"
+puts "#{somestation2.getsortedlist("Cargo").length}"
 
-#someTrain.stationinfo
+
+sometrain.stationinfo
