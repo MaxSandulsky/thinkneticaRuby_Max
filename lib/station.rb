@@ -1,23 +1,19 @@
 class Station
-  attr_reader :title
+  attr_reader :title, :trains
   def initialize(title)
     @trains = []
     @title = title
   end
   
-  def arrivingtrain(train)
+  def arriving_train(train)
     @trains << train 
   end
   
-  def trains
-    @trains.each { |train| puts "Train: #{train.number} on st: #{@title}" }
-  end
-  
-  def departuretrain(train) 
+  def departure_train(train) 
     @trains.delete(train)
   end
   
-  def getsortedlist(sortby)
+  def get_sorted_list(sortby)
     @trains.select { |train| train.type == sortby}
   end
 end

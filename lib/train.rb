@@ -1,23 +1,23 @@
 class Train
-  attr_reader :speed
-  attr_reader :vagons
-  attr_reader :number
-  attr_reader :type
+  attr_reader :speed, :vagons, :number, :type, :current_station, :passed_station, :next_station
+  
   def initialize(number, type, vagons)
     @number, @type, @vagons = number, type, vagons
   end
 
-  def vagonchange(function)
+  def vagons_increase
     if @speed == 0
-      if function == "decrease"
-      @vagons -= 1
-      elsif function == "increase"
       @vagons += 1
-      end
     end
   end
   
-  def speedgain(velocity)
+  def vagons_decrease
+    if @speed == 0
+      @vagons -= 1
+    end
+  end
+  
+  def speed_gain(velocity)
     @speed += velocity
   end
   
@@ -25,32 +25,32 @@ class Train
     @speed = 0
   end
   
-  def trainroute=(route)
-    @trainroute = route.stations
-    @currentstation = 0
+  def train_route=(route)
+    @train_route = route.stations
+    @current_station = route.first
+    @next_station = route.stations[1]
+    @current_station_index = 0
+  end
+
+  def move_forward
+    if  @next_station != nil
+      @train_route[@current_station_index].departure_train(self)
+      @passed_station = @current_station
+      @current_station = @next_station
+      @current_station_index += 1
+      @next_station = @train_route[@current_station_index]
+      @train_route[@current_station_index].arriving_train(self)
+    end
   end
   
-  def stationinfo
-    if @currentstation > 0
-    puts "last st: #{@trainroute[@currentstation - 1].title}"
-    end
-    puts "Current st: #{@trainroute[@currentstation].title}"
-    if @trainroute.length != @currentstation + 1 && @trainroute.length > 0
-    puts "Next st: #{@trainroute[@currentstation + 1].title}"
-    end
-  end
-  
-  def move(direction)
-    if @trainroute.length != 1 && direction == "forward"
-      @trainroute[@currentstation].departuretrain(self)
-      @currentstation += 1
-      @trainroute[@currentstation].arrivingtrain(self)
-    elsif @trainroute.length != 0 && direction == "backward"
-      @trainroute[@currentstation].departuretrain(self)
-      @currentstation -= 1
-      @trainroute[@currentstation].arrivingtrain(self)
-    else
-      puts "Oops! Wrong direction!"
+  def move_backward
+    if  @passed_station != nil
+      @train_route[@current_station_index].departure_train(self)
+      @next_station = @current_station
+      @current_station = @passed_station
+      @current_station_index -= 1
+      @passed_station = @train_route[@current_station_index]
+      @train_route[@current_station_index].arriving_train(self)
     end
   end
 

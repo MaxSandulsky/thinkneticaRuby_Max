@@ -3,39 +3,35 @@ load 'route.rb'
 load 'train.rb'
 
 
-somestation1 = Station.new("someTitle1")
-somestation2 = Station.new("someTitle2")
-somestation3 = Station.new("someTitle3")
-somestation4 = Station.new("someTitle4")
-anotherstation = Station.new("AnotherTitle")
+some_station1 = Station.new("someTitle1")
+some_station2 = Station.new("someTitle2")
+some_station3 = Station.new("someTitle3")
+some_station4 = Station.new("someTitle4")
+another_station = Station.new("AnotherTitle")
 
-sometrain = Train.new(127055, "Cargo", 4)
-anothertrain = Train.new(354000, "Cargo", 8)
+some_train = Train.new(127055, "Cargo", 4)
+another_train = Train.new(354000, "Cargo", 8)
 
-sometrain.vagonchange("increase")
+some_train.vagons_increase
 
-someroute = Route.new(somestation1, somestation4, somestation2, somestation3)
-anotherroute = Route.new(somestation4, somestation2)
+some_route = Route.new(some_station1, some_station4, some_station2, some_station3)
+another_route = Route.new(some_station4, some_station2)
 
 
-sometrain.trainroute = someroute
-anothertrain.trainroute = anotherroute
+some_train.train_route = some_route
+another_train.train_route = another_route
 
 3.times do
-sometrain.move("forward")
+some_train.move_forward
 end
 
-anothertrain.move("forward")
+another_train.move_forward
 
 2.times do
-sometrain.move("backward")
+some_train.move_backward
 end
 
-puts "#{somestation2.getsortedlist("Cargo").length}"
+puts "#{some_station2.get_sorted_list("Cargo").length}"
 
-someroute.delstation(somestation2)
-anotherroute.addstation(anotherstation)
-
-anotherroute.liststationtitles
-
-sometrain.stationinfo
+some_route.del_station(some_station2)
+another_route.add_station(another_station)

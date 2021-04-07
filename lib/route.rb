@@ -1,20 +1,19 @@
 class Route
-  attr_reader :stations
-  def initialize(first, last, *intermediatestations)
+  attr_reader :first, :last
+  def initialize(first, last, *intermediate_stations)
     @first, @last = first, last
-    @stations = intermediatestations.push(last).unshift(first)
+    @intermediate_stations = intermediate_stations
   end
   
-  def addstation(adding, possition = 1)
-    @stations.insert(possition, adding)
+  def add_station(adding, possition = 1)
+    @intermediate_stations.insert(possition, adding)
   end
   
-  def delstation(removing)
-    key = @stations.detect {|e| e == removing}
-    @stations.delete(key)
+  def del_station(removing)
+    @intermediate_stations.delete(removing)
   end
   
-  def liststationtitles
-    self.stations.each { |n|  puts "#{n.title}"}
+  def stations
+    return [@first, *@intermediate_stations, @last]
   end
 end
