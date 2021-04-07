@@ -1,5 +1,5 @@
 class Train
-  attr_reader :speed, :vagons, :number, :type, :current_station, :passed_station, :next_station
+  attr_reader :speed, :vagons, :number, :type, :stations
   
   def initialize(number, type, vagons)
     @number, @type, @vagons = number, type, vagons
@@ -26,32 +26,34 @@ class Train
   end
   
   def train_route=(route)
-    @train_route = route.stations
-    @current_station = route.first
-    @next_station = route.stations[1]
-    @current_station_index = 0
+    @stations = Stations.new(route.first, nil, route.stations[1], 0, route.stations)
+    route.first.arriving_train(self)
   end
 
   def move_forward
-    if  @next_station != nil
-      @train_route[@current_station_index].departure_train(self)
-      @passed_station = @current_station
-      @current_station = @next_station
-      @current_station_index += 1
-      @next_station = @train_route[@current_station_index]
-      @train_route[@current_station_index].arriving_train(self)
+    if  stations.next_station != nil
+      stations.current_station.departure_train(self)
+      stations.current_station_index += 1
+      move
+      stations.current_station.arriving_train(self)
     end
   end
   
   def move_backward
-    if  @passed_station != nil
-      @train_route[@current_station_index].departure_train(self)
-      @next_station = @current_station
-      @current_station = @passed_station
-      @current_station_index -= 1
-      @passed_station = @train_route[@current_station_index]
-      @train_route[@current_station_index].arriving_train(self)
+    if  stations.passed_station != nil
+      stations.current_station.departure_train(self)
+      stations.current_station_index -= 1
+      move
+      stations.current_station.arriving_train(self)
     end
   end
 
+  def move
+      stations.passed_station = stations.route[stations.current_station_index - 1]
+      stations.current_station = stations.route[stations.current_station_index]
+      stations.next_station = stations.route[stations.current_station_index + 1]
+  end
+  
+  Stations = Struct.new(:current_station, :passed_station, :next_station, :current_station_index, :route)
+  
 end
