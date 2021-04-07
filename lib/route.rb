@@ -1,0 +1,19 @@
+class Route
+  attr_reader :first, :last
+  def initialize(first, last, *intermediate_stations)
+    @first, @last = first, last
+    @intermediate_stations = intermediate_stations
+  end
+  
+  def add_station(adding, possition = 1)
+    @intermediate_stations.insert(possition, adding)
+  end
+  
+  def del_station(removing)
+    @intermediate_stations.delete(removing)
+  end
+  
+  def stations
+    return [@first, *@intermediate_stations, @last]
+  end
+end
