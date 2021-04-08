@@ -1,4 +1,8 @@
 class Route
+=begin
+#Я понял свою ошибку, в тексте курса было сказано, что объединять надо только после выполнения задания, но Я думал, чтобы создать новый PR, надо принять старый.
+И Я вносил исправления, а потом когда хотел создать новый ответ, объединял ветки) больше так не буду.
+=end
   attr_reader :first, :last, :intermediate_stations
   def initialize(first, last, *intermediate_stations)
     @first, @last = first, last
