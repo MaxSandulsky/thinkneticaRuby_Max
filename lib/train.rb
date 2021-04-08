@@ -41,6 +41,7 @@ class Train
   
   def move_backward
     if  passed_station != nil
+#если мы стоим на первой станции, то passed_station = nil
       current_station.departure_train(self)
       @current_station_index -= 1
       current_station.arriving_train(self)
