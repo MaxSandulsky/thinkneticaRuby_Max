@@ -10,10 +10,12 @@ class Station
   end
   
   def departure_train(train) 
-    @trains.delete(train)
+    if trains.include?(train)
+      trains.delete(train)
+    end
   end
   
   def get_sorted_list(sortby)
-    @trains.select { |train| train.type == sortby}
+    trains.select { |train| train.type == sortby}
   end
 end

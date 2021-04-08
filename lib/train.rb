@@ -1,5 +1,5 @@
 class Train
-  attr_reader :speed, :vagons, :number, :type, :current_station, :passed_station, :next_station
+  attr_reader :speed, :vagons, :number, :type, :route
   
   def initialize(number, type, vagons)
     @number, @type, @vagons = number, type, vagons
@@ -25,33 +25,38 @@ class Train
     @speed = 0
   end
   
-  def train_route=(route)
-    @train_route = route.stations
-    @current_station = route.first
-    @next_station = route.stations[1]
+  def train_route=(route_set)
+    @route = route_set
+    route.first.arriving_train(self)
     @current_station_index = 0
   end
 
   def move_forward
-    if  @next_station != nil
-      @train_route[@current_station_index].departure_train(self)
-      @passed_station = @current_station
-      @current_station = @next_station
+    if  next_station != nil
+      current_station.departure_train(self)
       @current_station_index += 1
-      @next_station = @train_route[@current_station_index]
-      @train_route[@current_station_index].arriving_train(self)
+      current_station.arriving_train(self)
     end
   end
   
   def move_backward
-    if  @passed_station != nil
-      @train_route[@current_station_index].departure_train(self)
-      @next_station = @current_station
-      @current_station = @passed_station
+    if  passed_station != nil
+      current_station.departure_train(self)
       @current_station_index -= 1
-      @passed_station = @train_route[@current_station_index]
-      @train_route[@current_station_index].arriving_train(self)
+      current_station.arriving_train(self)
     end
   end
-
+  
+  def current_station
+    route.stations[@current_station_index]
+  end
+  
+  def passed_station
+    route.stations[@current_station_index - 1]
+  end
+  
+  def next_station
+    route.stations[@current_station_index + 1]
+  end
+  
 end
