@@ -14,6 +14,6 @@ class Route
   end
   
   def stations
-    return [first, *intermediate_stations, last]
+    [first, *intermediate_stations, last]
   end
 end
