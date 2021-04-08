@@ -12,7 +12,7 @@ another_station = Station.new("AnotherTitle")
 some_train = Train.new(127055, "Cargo", 4)
 another_train = Train.new(354000, "Cargo", 8)
 
-some_train.vagons_increase
+some_train.wagons_increase
 
 some_route = Route.new(some_station1, some_station4, some_station2, some_station3)
 another_route = Route.new(some_station4, some_station2)

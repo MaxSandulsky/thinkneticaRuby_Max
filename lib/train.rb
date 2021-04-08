@@ -1,19 +1,19 @@
 class Train
-  attr_reader :speed, :vagons, :number, :type, :route
+  attr_reader :speed, :wagons, :number, :type, :route
   
-  def initialize(number, type, vagons)
-    @number, @type, @vagons = number, type, vagons
+  def initialize(number, type, wagons)
+    @number, @type, @wagons = number, type, wagons
   end
 
-  def vagons_increase
+  def wagons_increase
     if @speed == 0
-      @vagons += 1
+      @wagons += 1
     end
   end
   
-  def vagons_decrease
+  def wagons_decrease
     if @speed == 0
-      @vagons -= 1
+      @wagons -= 1
     end
   end
   
@@ -27,8 +27,8 @@ class Train
   
   def train_route=(route_set)
     @route = route_set
-    route.first.arriving_train(self)
     @current_station_index = 0
+    current_station.arriving_train(self)
   end
 
   def move_forward
