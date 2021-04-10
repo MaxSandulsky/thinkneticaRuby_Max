@@ -14,6 +14,7 @@ class Station
   end
 
   def get_sorted_list(sortby)
-    trains.select { |train| train.type == sortby }
+    trains_count = trains.select { |train| train.type == sortby }
+    trains_count.length
   end
 end

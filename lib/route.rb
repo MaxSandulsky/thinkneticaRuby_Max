@@ -1,22 +1,29 @@
 class Route
-  # #Я понял свою ошибку, в тексте курса было сказано, что объединять надо только после выполнения задания, но Я думал, чтобы создать новый PR, надо принять старый.
-  # И Я вносил исправления, а потом когда хотел создать новый ответ, объединял ветки) больше так не буду.
-  attr_reader :first, :last, :intermediate_stations
-  def initialize(first, last, *intermediate_stations)
-    @first = first
-    @last = last
-    @intermediate_stations = intermediate_stations
+  attr_reader :origination, :destination, :intermediate_stations
+  
+  def initialize(stations)
+    self.origination = stations.first
+    self.destination = stations.last
+    stations.pop
+    stations.shift
+    self.intermediate_stations = stations
   end
 
   def add_station(adding, possition = 1)
-    @intermediate_stations.insert(possition, adding)
+    self.intermediate_stations.insert(possition, adding)
   end
 
   def del_station(removing)
-    @intermediate_stations.delete(removing)
+    self.intermediate_stations.delete(removing)
   end
 
   def stations
-    [first, *intermediate_stations, last]
+    [self.origination, self.intermediate_stations, self.destination].flatten
   end
+  
+  def route_reverse(stations)
+    self.initialize(stations)
+  end
+  private #согласно заданию №1 начало и конец пути сменить нельзя, а для добавления и удаления станций существуют соответствующие методы
+  attr_writer :origination, :destination, :intermediate_stations
 end
