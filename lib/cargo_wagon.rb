@@ -7,10 +7,11 @@ class CargoWagon < Wagon
   attr_reader :type
   def initialize
     super
-    self.def_type
+    def_type
   end
 
   private
+
   def def_type
     @type = 'Cargo'
   end

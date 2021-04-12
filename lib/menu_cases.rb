@@ -3,7 +3,6 @@
 # and open the template in the editor.
 
 module MenuCases
-    
   def casing_(input_)
     case input_
     when 1
@@ -17,7 +16,7 @@ module MenuCases
       casing_what_to_enter(gets.to_i)
     end
   end
-  
+
   def casing_what_to_create(input_)
     case input_
     when 1
@@ -25,7 +24,7 @@ module MenuCases
       casing_train_type(gets.to_i)
       casing_(1)
     when 2
-      puts "Specify station title: "
+      puts 'Specify station title: '
       create_station(gets.chomp)
       casing_(1)
     when 3
@@ -40,7 +39,7 @@ module MenuCases
       menu
     end
   end
-  
+
   def casing_what_to_do(input_)
     case input_
     when 1
@@ -57,7 +56,7 @@ module MenuCases
       menu
     end
   end
-  
+
   def casing_what_to_enter(input_)
     case input_
     when 1
@@ -76,7 +75,7 @@ module MenuCases
       menu
     end
   end
-  
+
   def casin_object_inspection(input_)
     case input_
     when 1
@@ -95,7 +94,7 @@ module MenuCases
       casing_(4)
     end
   end
-  
+
   def casing_wagon_type(input_)
     case input_
     when 1
@@ -106,7 +105,7 @@ module MenuCases
       menu
     end
   end
-  
+
   def casing_wagon_manipulation(input_)
     case input_
     when 1
@@ -115,21 +114,21 @@ module MenuCases
       wagon_unmount(wagon_selection, train_selection)
     end
   end
-  
+
   def casing_train_movement(train)
     train_moving_text
-    while true
+    loop do
       index = gets.to_i
       case index
       when 1
-      train_move_forward(train)
+        train_move_forward(train)
       when 2
-      train_move_backward(train)
+        train_move_backward(train)
       else break
       end
     end
   end
-  
+
   def casing_train_type(input_)
     case input_
     when 1
@@ -140,7 +139,7 @@ module MenuCases
       menu
     end
   end
-  
+
   def casing_train_inspection(input_)
     case input_
     when 1
@@ -151,7 +150,7 @@ module MenuCases
       train_route_info(train_selection)
     end
   end
-  
+
   def casiong_station_inspection(input_)
     case input_
     when 1
@@ -162,7 +161,7 @@ module MenuCases
       station_cargo_train_info(station_selection)
     end
   end
-  
+
   def casing_route_array
     add_station_array = []
     begin
@@ -172,12 +171,12 @@ module MenuCases
         return add_station_array
       when /\d+/
         add_station_array.push(index.to_i - 1)
-      else 
+      else
         return nil
       end
     end while index.to_i > 0
   end
-  
+
   def casin_station_moving(input_)
     case input_
     when 1
@@ -186,25 +185,25 @@ module MenuCases
       remove_station_from_the_way(station_selection, route_selection)
     end
   end
-  
+
   def remove_station_from_the_way(station, route)
     route.del_station(station)
   end
-  
+
   def add_station_to_the_way(station, route)
     route.add_station(station)
   end
-  
+
   def casing_deliting_objects(input_)
     case input_
     when 1
-      self.trains_pool.delete(train_selection)
+      trains_pool.delete(train_selection)
     when 2
-      self.stations_pool.delete(station_selection)
+      stations_pool.delete(station_selection)
     when 3
-      self.routes_pool.delete(route_selection)
+      routes_pool.delete(route_selection)
     when 4
-      self.wagons_pool.delete(wagon_selection)
+      wagons_pool.delete(wagon_selection)
     end
   end
 end

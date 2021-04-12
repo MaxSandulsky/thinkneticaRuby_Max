@@ -7,11 +7,12 @@ class PassengerTrain < Train
   attr_reader :type
   def initialize(number)
     super
-    self.def_type
+    def_type
   end
-  
+
   private
-  def def_type #Функция смены типа поезда так-же должна быть изолирована
+
+  def def_type # Функция смены типа поезда так-же должна быть изолирована
     @type = 'Passenger'
   end
 end

@@ -7,11 +7,12 @@ class PassengerWagon < Wagon
   attr_reader :type
   def initialize
     super
-    self.def_type
+    def_type
   end
 
   private
-  def def_type #Я считаю, что функция смены типа вагона должна быть недоступна извне
+
+  def def_type # Я считаю, что функция смены типа вагона должна быть недоступна извне
     @type = 'Passenger'
   end
 end

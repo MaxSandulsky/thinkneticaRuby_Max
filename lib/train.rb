@@ -8,13 +8,13 @@ class Train
   end
 
   def wagon_connect(wagon)
-    wagon.connect(self) if self.speed.zero? && !self.wagons.include?(wagon)
-    puts "That wagon now connected to the train: #{self.wagons.include?(wagon)}"
+    wagon.connect(self) if speed.zero? && !wagons.include?(wagon)
+    puts "That wagon now connected to the train: #{wagons.include?(wagon)}"
   end
 
   def wagon_disconnect(wagon)
-    wagon.disconnect(self) if self.speed.zero? && self.wagons.include?(wagon)
-    puts "#{self.wagons.include?(wagon)}"
+    wagon.disconnect(self) if speed.zero? && wagons.include?(wagon)
+    puts wagons.include?(wagon).to_s
   end
 
   def speed_gain(velocity)
@@ -48,25 +48,18 @@ class Train
   end
 
   def current_station
-    unless current_station_index.nil?
-      route.stations[@current_station_index]
-    end
+    route.stations[@current_station_index] unless current_station_index.nil?
   end
 
   def passed_station
-    unless current_station_index.nil?
-      route.stations[@current_station_index - 1]
-    end
+    route.stations[@current_station_index - 1] unless current_station_index.nil?
   end
 
   def next_station
-    unless current_station_index.nil?
-      route.stations[@current_station_index + 1]
-    end
+    route.stations[@current_station_index + 1] unless current_station_index.nil?
   end
-  private #Понятие "индекс текущей станции" не существует в контексте реальности и является абстрактным выражением "текущая станция"
-  def current_station_index=(index)
-    @current_station_index = index
-  end
-  
+
+  private # Понятие "индекс текущей станции" не существует в контексте реальности и является абстрактным выражением "текущая станция"
+
+  attr_writer :current_station_index
 end

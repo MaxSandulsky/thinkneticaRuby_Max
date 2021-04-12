@@ -7,10 +7,11 @@ class CargoTrain < Train
   attr_reader :type
   def initialize(number)
     super
-    self.def_type
+    def_type
   end
-  
+
   private
+
   def def_type
     @type = 'Cargo'
   end
