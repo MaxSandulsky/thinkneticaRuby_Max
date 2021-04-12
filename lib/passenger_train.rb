@@ -11,7 +11,7 @@ class PassengerTrain < Train
   end
   
   private
-  def def_type
+  def def_type #Функция смены типа поезда так-же должна быть изолирована
     @type = 'Passenger'
   end
 end

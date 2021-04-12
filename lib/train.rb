@@ -9,7 +9,7 @@ class Train
 
   def wagon_connect(wagon)
     wagon.connect(self) if self.speed.zero? && !self.wagons.include?(wagon)
-    puts "#{self.wagons.include?(wagon)}"
+    puts "That wagon now connected to the train: #{self.wagons.include?(wagon)}"
   end
 
   def wagon_disconnect(wagon)
@@ -27,7 +27,7 @@ class Train
 
   def train_route=(route_set)
     @route = route_set
-    @current_station_index = 0
+    self.current_station_index = 0
     current_station.arriving_train(self)
   end
 
@@ -64,7 +64,7 @@ class Train
       route.stations[@current_station_index + 1]
     end
   end
-  private
+  private #Понятие "индекс текущей станции" не существует в контексте реальности и является абстрактным выражением "текущая станция"
   def current_station_index=(index)
     @current_station_index = index
   end

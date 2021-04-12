@@ -7,12 +7,14 @@ require_relative 'passenger_wagon.rb'
 require_relative 'menu_text.rb'
 require_relative 'menu_cases.rb'
 require_relative 'menu_activity.rb'
+require_relative 'menu_info'
 
 class RailRoad
   attr_accessor :stations_pool, :routes_pool, :wagons_pool, :trains_pool
   include MenuCases
   include MenuText
   include MenuActivity
+  include MenuInfo
   
   def initialize
     self.stations_pool = [Station.new('someTitle1'), Station.new('someTitle2'),

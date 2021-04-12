@@ -11,5 +11,4 @@ class Wagon
   def disconnect(train)
     train.wagons.delete(self)
   end
-  
 end

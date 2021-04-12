@@ -11,7 +11,7 @@ class PassengerWagon < Wagon
   end
 
   private
-  def def_type
+  def def_type #Я считаю, что функция смены типа вагона должна быть недоступна извне
     @type = 'Passenger'
   end
 end
