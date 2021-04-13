@@ -3,11 +3,13 @@
 # and open the template in the editor.
 
 class Wagon
-  def connect(train)
-    train.wagons.push(self)
-  end
 
-  def disconnect(train)
-    train.wagons.delete(self)
+  def initialize
+    
   end
+  
+  def type
+    
+  end
+  
 end

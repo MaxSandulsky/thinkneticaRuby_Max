@@ -1,20 +1,19 @@
 class Train
-  attr_reader :speed, :number, :route, :wagons, :current_station_index
-
+  attr_reader :route, :wagons, :current_station_index
+  attr_accessor :speed, :number
+  
   def initialize(number)
-    @wagons = []
-    @number = number
-    @speed = 0
+    self.wagons = []
+    self.number = number
+    self.speed = 0
   end
 
   def wagon_connect(wagon)
-    wagon.connect(self) if speed.zero? && !wagons.include?(wagon)
-    puts "That wagon now connected to the train: #{wagons.include?(wagon)}"
+    self.wagons << wagon if self.speed.zero? && !self.wagons.include?(wagon)
   end
 
   def wagon_disconnect(wagon)
-    wagon.disconnect(self) if speed.zero? && wagons.include?(wagon)
-    puts wagons.include?(wagon).to_s
+    self.wagons.delete(wagon) if self.speed.zero? && self.wagons.include?(wagon)
   end
 
   def speed_gain(velocity)
@@ -61,5 +60,5 @@ class Train
 
   private # Понятие "индекс текущей станции" не существует в контексте реальности и является абстрактным выражением "текущая станция"
 
-  attr_writer :current_station_index
+  attr_writer :current_station_index, :wagons
 end

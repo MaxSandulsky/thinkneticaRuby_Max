@@ -1,31 +1,37 @@
 class Route
-  attr_reader :origination, :destination, :intermediate_stations
+  attr_accessor :stations
 
-  def initialize(stations)
-    self.origination = stations.first
-    self.destination = stations.last
-    stations.pop
-    stations.shift
-    self.intermediate_stations = stations
+  def initialize(stations = [])
+    self.stations = stations
   end
 
   def add_station(adding, possition = 1)
-    intermediate_stations.insert(possition, adding)
+    self.stations.include?(adding)
+    self.stations.insert(possition, adding)
+    self.stations.include?(adding)
   end
 
   def del_station(removing)
-    intermediate_stations.delete(removing)
+    self.stations.include?(removing)
+    self.stations.delete(removing)
+    self.stations.include?(removing)
   end
 
-  def stations
-    [origination, intermediate_stations, destination].flatten
+  def route_reverse
+    self.stations.reverse!
   end
 
-  def route_reverse(stations)
-    initialize(stations)
+  def origination
+    self.stations.first
   end
-
-  private # согласно заданию №1 начало и конец пути сменить нельзя, а для добавления и удаления станций существуют соответствующие методы
-
-  attr_writer :origination, :destination, :intermediate_stations
+  
+  def destination
+    self.stations.last
+  end
+  
+  def station_titles
+    titles = []
+    self.stations.each { |x| titles << x.title}
+    titles
+  end
 end

@@ -4,15 +4,9 @@
 require_relative 'train.rb'
 
 class PassengerTrain < Train
-  attr_reader :type
-  def initialize(number)
-    super
-    def_type
+  
+  def wagon_connect(wagon)
+    super if wagon.class == PassengerWagon
   end
 
-  private
-
-  def def_type # Функция смены типа поезда так-же должна быть изолирована
-    @type = 'Passenger'
-  end
 end

@@ -4,15 +4,8 @@
 require_relative 'train.rb'
 
 class CargoTrain < Train
-  attr_reader :type
-  def initialize(number)
-    super
-    def_type
-  end
-
-  private
-
-  def def_type
-    @type = 'Cargo'
+  
+  def wagon_connect(wagon)
+    super if wagon.class == CargoWagon
   end
 end
