@@ -3,13 +3,5 @@
 # and open the template in the editor.
 
 class Wagon
-
-  def initialize
-    
-  end
-  
-  def type
-    
-  end
   
 end

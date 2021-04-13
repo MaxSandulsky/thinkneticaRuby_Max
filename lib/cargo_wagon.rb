@@ -4,15 +4,5 @@
 require_relative 'wagon.rb'
 
 class CargoWagon < Wagon
-  attr_reader :type
-  def initialize
-    super
-    def_type
-  end
 
-  private
-
-  def def_type
-    @type = 'Cargo'
-  end
 end
