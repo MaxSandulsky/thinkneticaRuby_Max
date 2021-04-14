@@ -4,8 +4,7 @@
 require_relative 'train.rb'
 
 class CargoTrain < Train
-  
-  def wagon_connect(wagon)
-    super if wagon.class == CargoWagon
+  def initialize(number)
+    super self.type = 'Cargo'
   end
 end

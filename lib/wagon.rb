@@ -3,5 +3,5 @@
 # and open the template in the editor.
 
 class Wagon
-  
+  attr_accessor :type
 end

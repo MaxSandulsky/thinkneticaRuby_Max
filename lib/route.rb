@@ -6,32 +6,28 @@ class Route
   end
 
   def add_station(adding, possition = 1)
-    self.stations.include?(adding)
-    self.stations.insert(possition, adding)
-    self.stations.include?(adding)
+    stations.insert(possition, adding)
   end
 
   def del_station(removing)
-    self.stations.include?(removing)
-    self.stations.delete(removing)
-    self.stations.include?(removing)
+    stations.delete(removing)
   end
 
   def route_reverse
-    self.stations.reverse!
+    stations.reverse!
   end
 
   def origination
-    self.stations.first
+    stations.first
   end
-  
+
   def destination
-    self.stations.last
+    stations.last
   end
-  
+
   def station_titles
     titles = []
-    self.stations.each { |x| titles << x.title}
+    stations.each { |x| titles << x.title }
     titles
   end
 end

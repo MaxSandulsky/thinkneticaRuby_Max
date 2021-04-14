@@ -1,7 +1,7 @@
 class Train
   attr_reader :route, :wagons, :current_station_index
-  attr_accessor :speed, :number
-  
+  attr_accessor :speed, :number, :type
+
   def initialize(number)
     self.wagons = []
     self.number = number
@@ -9,11 +9,11 @@ class Train
   end
 
   def wagon_connect(wagon)
-    self.wagons << wagon if self.speed.zero? && !self.wagons.include?(wagon)
+    wagons << wagon if speed.zero? && !wagons.include?(wagon) && type.eql?(wagon.type)
   end
 
   def wagon_disconnect(wagon)
-    self.wagons.delete(wagon) if self.speed.zero? && self.wagons.include?(wagon)
+    wagons.delete(wagon) if speed.zero? && wagons.include?(wagon)
   end
 
   def speed_gain(velocity)

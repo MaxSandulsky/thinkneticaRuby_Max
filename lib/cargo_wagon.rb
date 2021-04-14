@@ -4,5 +4,7 @@
 require_relative 'wagon.rb'
 
 class CargoWagon < Wagon
-
+  def initialize 
+    self.type = 'Cargo'
+  end
 end
