@@ -1,11 +1,7 @@
 # To change this license header, choose License Headers in Project Properties.
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
-require_relative 'wagon.rb'
 
-class PassengerWagon < Wagon
-  def initialize(number, prodaction_company)
-    super(number, prodaction_company)
-    self.type = 'Passenger'
-  end
+module ProdactionCompany
+  attr_accessor :prodaction_company, :number, :type
 end

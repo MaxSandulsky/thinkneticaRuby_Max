@@ -1,19 +1,33 @@
-class Train
-  attr_reader :route, :wagons, :current_station_index
-  attr_accessor :speed, :number, :type
+require_relative 'prodaction_company.rb'
+require_relative 'instance_counter.rb'
 
-  def initialize(number)
-    self.wagons = []
+class Train
+  include ProdactionCompany
+  include InstanceCounter
+
+  attr_reader :route, :wagons, :current_station_index
+  attr_accessor :speed
+
+  def initialize(number, prodaction_company)
+    self.prodaction_company = prodaction_company
     self.number = number
+    self.wagons = []
     self.speed = 0
+    
+    register_instance
   end
 
   def wagon_connect(wagon)
-    wagons << wagon if speed.zero? && !wagons.include?(wagon) && type.eql?(wagon.type)
+    return nil unless speed.zero?
+    return nil if wagon.nil?
+    return nil unless type.eql?(wagon.type)
+    self.wagons << wagon
   end
 
   def wagon_disconnect(wagon)
-    wagons.delete(wagon) if speed.zero? && wagons.include?(wagon)
+    return nil unless speed.zero?
+    return nil if wagon.nil?
+    wagons.delete(wagon)
   end
 
   def speed_gain(velocity)
@@ -25,6 +39,7 @@ class Train
   end
 
   def train_route=(route_set)
+    return nil if route_set.nil?
     @route = route_set
     self.current_station_index = 0
     current_station.arriving_train(self)

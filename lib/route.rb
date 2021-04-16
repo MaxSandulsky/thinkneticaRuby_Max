@@ -1,8 +1,14 @@
+require_relative 'instance_counter.rb'
+
 class Route
+  include InstanceCounter
+  
   attr_accessor :stations
 
   def initialize(stations = [])
     self.stations = stations
+    
+    self.class.add_instance(self)
   end
 
   def add_station(adding, possition = 1)

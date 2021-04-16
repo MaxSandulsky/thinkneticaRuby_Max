@@ -6,7 +6,7 @@ require_relative 'passenger_wagon.rb'
 require_relative 'cargo_wagon.rb'
 
 class RailRoad
-  attr_accessor :stations_pool, :routes_pool, :wagons_pool, :trains_pool
+  attr_accessor :stations_pool, :routes_pool
 
   def initialize; end
 
@@ -36,9 +36,11 @@ class RailRoad
                           Station.new('someTitle3'), Station.new('someTitle4'), Station.new('someTitle5')]
     self.routes_pool = [Route.new([stations_pool[0], stations_pool[1], stations_pool[2], stations_pool[3]]),
                         Route.new([stations_pool[4], stations_pool[3]])]
-    self.wagons_pool = [PassengerWagon.new, PassengerWagon.new, CargoWagon.new]
-    self.trains_pool = [PassengerTrain.new(1984)]
-    trains_pool[0].wagon_connect(wagons_pool[0])
+    PassengerWagon.new(1, 'MaxIndustries')
+    PassengerWagon.new(2, 'MaxIndustries')
+    CargoWagon.new(3, 'MaxIndustries')
+    PassengerTrain.new(1984, 'MaxIndustries')
+    Train.find_inst(1984).wagon_connect(Wagon.find_inst(1))
   end
 
   private
@@ -80,11 +82,11 @@ class RailRoad
   def creating(input)
     case input
     when 1
-      puts 'Specify train number: '
-      puts 'This number is already taken' unless create_passenger_train(gets.to_i).class == PassengerTrain
+      puts 'Specify train number and company: '
+      puts 'This number is already taken' unless create_passenger_train(gets.to_i, gets.to_s)
     when 2
-      puts 'Specify train number: '
-      puts 'This number is already taken' unless create_cargo_train(gets.to_i).class == CargoTrain
+      puts 'Specify train number and company: '
+      puts 'This number is already taken' unless create_cargo_train(gets.to_i, gets.to_s)
     when 3
       puts 'Specify station title: '
       create_station(gets.chomp)
@@ -92,18 +94,28 @@ class RailRoad
       puts 'Specify route number: '
       create_route(gets.to_i)
     when 5
-      wagons_pool.push(PassengerWagon.new)
+      puts 'Specify train number and company: '
+      puts 'This number is already taken' unless PassengerWagon.new(gets.to_i, gets.to_s)
     when 6
-      wagons_pool.push(CargoWagon.new)
+      puts 'Specify train number and company: '
+      puts 'This number is already taken' unless CargoWagon.new(gets.to_i, gets.to_s)
     end
   end
 
-  def create_cargo_train(number)
-    trains_pool[number] = CargoTrain.new(number) if trains_pool[number].nil?
+  def create_cargo_wagon(number, prodaction_company)
+    CargoWagon.new(number, prodaction_company) if Wagon.find_inst(number).nil?
+  end
+  
+  def create_passenger_wagon(number, prodaction_company)
+    PassengerWagon.new(number, prodaction_company) if Wagon.find_inst(number).nil?
+  end
+  
+  def create_cargo_train(number, prodaction_company)
+    CargoTrain.new(number, prodaction_company) if Train.find_inst(number).nil?
   end
 
-  def create_passenger_train(number)
-    trains_pool[number] = PassengerTrain.new(number) if trains_pool[number].nil?
+  def create_passenger_train(number, prodaction_company)
+    PassengerTrain.new(number, prodaction_company) if Train.find_inst(number).nil?
   end
 
   def create_station(title)
@@ -149,21 +161,21 @@ class RailRoad
   end
 
   def wagon_mount(train, wagon)
-    train.wagon_connect(wagon)
+    train.wagon_connect(wagon) unless train.nil?
   end
 
   def wagon_unmount(train, wagon)
-    train.wagon_disconnect(wagon)
+    train.wagon_disconnect(wagon) unless train.nil?
   end
 
   def train_selection
-    trains_pool.each_with_index { |x, index| puts "#{index}: #{x.class}" }
-    trains_pool[gets.to_i]
+    Train.all.each { |x| puts "#{x.number}: #{x.class}" }
+    Train.find_inst(gets.to_i)
   end
 
   def wagon_selection
-    wagons_pool.each_with_index { |x, index| puts "#{index}: #{x.class}" }
-    wagons_pool[gets.to_i]
+    Wagon.all.each { |x| puts "#{x.number}: #{x.class}" }
+    Wagon.find_inst(gets.to_i)
   end
 
   def route_selection
@@ -174,10 +186,11 @@ class RailRoad
   end
 
   def assign_route_to_train(train, route)
-    train.train_route = route
+    train.train_route = route unless train.nil?
   end
 
   def moving_train(train)
+    return nil if train.route.nil?
     moving_text
     direction = 1
     until direction == 0
@@ -218,7 +231,7 @@ class RailRoad
   end
 
   def station_list
-    stations_pool.each do |x|
+    Station.all.each do |x|
       puts "On station #{x.title}:
     Count of cargo trains: #{x.get_sorted_list(CargoTrain)}
     Count of passenger trains: #{x.get_sorted_list(PassengerTrain)}" end
@@ -234,7 +247,9 @@ class RailRoad
 end
 
 rr = RailRoad.new
+
 rr.seed
+
 rr.menu
 
 puts 'Goodbye!'
