@@ -1,15 +1,15 @@
-require_relative 'prodaction_company.rb'
+require_relative 'manufacturer.rb'
 require_relative 'instance_counter.rb'
 
 class Train
-  include ProdactionCompany
+  include Manufacturer
   include InstanceCounter
 
   attr_reader :route, :wagons, :current_station_index
   attr_accessor :speed
 
-  def initialize(number, prodaction_company)
-    self.prodaction_company = prodaction_company
+  def initialize(number, manufacturer)
+    self.manufacturer = manufacturer
     self.number = number
     self.wagons = []
     self.speed = 0

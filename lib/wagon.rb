@@ -2,14 +2,14 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 require_relative 'prodaction_company.rb'
-require_relative 'instance_counter.rb'
+require_relative 'manufacturer.rb'
 
 class Wagon
-  include ProdactionCompany
+  include Manufacturer
   include InstanceCounter
 
-  def initialize(number, prodaction_company)
-    self.prodaction_company = prodaction_company
+  def initialize(number, manufacturer)
+    self.manufacturer = manufacturer
     self.number = number
 
     register_instance
