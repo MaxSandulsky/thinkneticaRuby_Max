@@ -3,8 +3,7 @@ require_relative 'route.rb'
 require_relative 'passenger_train.rb'
 require_relative 'cargo_train.rb'
 require_relative 'passenger_wagon.rb'
-require_relative 'c
-end                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                _wagon.rb'
+require_relative 'cargo_wagon.rb'
 
 class RailRoad
   attr_accessor :stations_pool, :routes_pool
