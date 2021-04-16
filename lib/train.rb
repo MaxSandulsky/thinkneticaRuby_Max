@@ -13,7 +13,7 @@ class Train
     self.number = number
     self.wagons = []
     self.speed = 0
-    
+
     register_instance
   end
 
@@ -21,7 +21,7 @@ class Train
     return nil unless speed.zero?
     return nil if wagon.nil?
     return nil unless type.eql?(wagon.type)
-    self.wagons << wagon
+    wagons << wagon
   end
 
   def wagon_disconnect(wagon)

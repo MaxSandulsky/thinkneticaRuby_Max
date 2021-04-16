@@ -7,11 +7,11 @@ require_relative 'instance_counter.rb'
 class Wagon
   include ProdactionCompany
   include InstanceCounter
-  
+
   def initialize(number, prodaction_company)
     self.prodaction_company = prodaction_company
     self.number = number
-    
+
     register_instance
   end
 end

@@ -2,18 +2,18 @@ require_relative 'instance_counter.rb'
 
 class Station
   include InstanceCounter
-  
+
   attr_reader :title, :trains
 
   def initialize(title)
     @trains = []
     @title = title
-    
+
     self.class.add_instance(self)
   end
-  
+
   def arriving_train(train)
-    self.trains << train unless trains.include?(train)
+    trains << train unless trains.include?(train)
   end
 
   def departure_train(train)

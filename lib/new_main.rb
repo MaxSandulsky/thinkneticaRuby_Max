@@ -3,7 +3,8 @@ require_relative 'route.rb'
 require_relative 'passenger_train.rb'
 require_relative 'cargo_train.rb'
 require_relative 'passenger_wagon.rb'
-require_relative 'cargo_wagon.rb'
+require_relative 'c
+end                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                _wagon.rb'
 
 class RailRoad
   attr_accessor :stations_pool, :routes_pool
@@ -105,11 +106,11 @@ class RailRoad
   def create_cargo_wagon(number, prodaction_company)
     CargoWagon.new(number, prodaction_company) if Wagon.find_inst(number).nil?
   end
-  
+
   def create_passenger_wagon(number, prodaction_company)
     PassengerWagon.new(number, prodaction_company) if Wagon.find_inst(number).nil?
   end
-  
+
   def create_cargo_train(number, prodaction_company)
     CargoTrain.new(number, prodaction_company) if Train.find_inst(number).nil?
   end
