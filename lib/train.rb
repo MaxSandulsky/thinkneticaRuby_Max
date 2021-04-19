@@ -1,32 +1,33 @@
 require_relative 'manufacturer.rb'
 require_relative 'instance_counter.rb'
+require_relative 'train_validation.rb'
 
 class Train
   include Manufacturer
   include InstanceCounter
-
-  attr_reader :route, :wagons, :current_station_index
+  include TrainValidation
+  
+  attr_reader :wagons,  :route
   attr_accessor :speed
-
+  
   def initialize(number, manufacturer)
     self.manufacturer = manufacturer
     self.number = number
     self.wagons = []
     self.speed = 0
-
+    validation!
     register_instance
   end
 
   def wagon_connect(wagon)
-    return nil unless speed.zero?
-    return nil if wagon.nil?
-    return nil unless type.eql?(wagon.type)
+    speed_validation!
+    type_validation!(wagon)
     wagons << wagon
   end
 
   def wagon_disconnect(wagon)
-    return nil unless speed.zero?
-    return nil if wagon.nil?
+    speed_validation!
+    wagon_connection_validation!(wagon)
     wagons.delete(wagon)
   end
 
@@ -39,41 +40,59 @@ class Train
   end
 
   def train_route=(route_set)
-    return nil if route_set.nil?
-    @route = route_set
+    self.route = route_set
+    route_validation!
     self.current_station_index = 0
     current_station.arriving_train(self)
   end
 
   def move_forward
-    unless next_station.nil?
-      current_station.departure_train(self)
-      @current_station_index += 1
-      current_station.arriving_train(self)
-    end
+    route_validation!
+    current_station.departure_train(self)
+    @current_station_index += 1
+    current_station.arriving_train(self)
   end
 
-  def move_backward
-    unless passed_station.nil?
-      current_station.departure_train(self)
-      @current_station_index -= 1
-      current_station.arriving_train(self)
-    end
+  def move_backward  
+    route_validation!
+    current_station.departure_train(self)
+    @current_station_index -= 1
+    current_station.arriving_train(self)
   end
 
   def current_station
-    route.stations[@current_station_index] unless current_station_index.nil?
+    route_validation!
+    route.stations[@current_station_index]
   end
 
   def passed_station
-    route.stations[@current_station_index - 1] unless current_station_index.nil?
+    route_validation!
+    route.stations[@current_station_index - 1]
   end
 
   def next_station
-    route.stations[@current_station_index + 1] unless current_station_index.nil?
+    route_validation!
+    route.stations[@current_station_index + 1]
   end
 
-  private # Понятие "индекс текущей станции" не существует в контексте реальности и является абстрактным выражением "текущая станция"
-
-  attr_writer :current_station_index, :wagons
+  private
+  
+  attr_writer  :route
+  attr_accessor :current_station_index, :wagons
+  
+  def type_validation!(wagon)
+    raise "Invalid type!" unless type.eql?(wagon.type)
+  end
+  
+  def speed_validation!
+    raise "Speed is not zero!" unless speed == 0
+  end
+  
+  def wagon_connection_validation!(wagon)
+    raise "Selected wagon not connected!" unless wagons.include?(wagon)
+  end
+  
+  def route_validation!
+    raise "Route couldn't be nil!" if route.nil?
+  end
 end

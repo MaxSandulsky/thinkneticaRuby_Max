@@ -25,7 +25,7 @@ module InstanceCounter
     end
 
     def find_inst(number)
-      instances.find { |x| x.number == number } || nil
+      instances.find { |x| x.number.to_s == number } || nil
     end
 
     def add_instance(instance)

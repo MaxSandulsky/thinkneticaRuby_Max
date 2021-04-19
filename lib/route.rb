@@ -6,8 +6,10 @@ class Route
   attr_accessor :stations
 
   def initialize(stations = [])
-    self.stations = stations
-
+    @stations = stations
+    
+    validation!
+    
     self.class.add_instance(self)
   end
 
@@ -35,5 +37,18 @@ class Route
     titles = []
     stations.each { |x| titles << x.title }
     titles
+  end
+  
+  def validation!
+    raise "You need at least 2 stations!" if stations.nil?
+    raise "You need at least 2 stations!" if stations.length < 2
+    raise 'Your origination couldn\'t be your destination!' if origination == destination
+  end
+  
+  def valid?
+    validation!
+    true
+  rescue
+    false
   end
 end

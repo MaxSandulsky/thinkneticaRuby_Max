@@ -24,7 +24,7 @@ class RailRoad
       when 3
         moving_train(train_selection)
       when 4
-        station_list
+        station_list_info
       else
         quit_flag = true
       end
@@ -32,15 +32,15 @@ class RailRoad
   end
 
   def seed
-    self.stations_pool = [Station.new('someTitle1'), Station.new('someTitle2'),
-                          Station.new('someTitle3'), Station.new('someTitle4'), Station.new('someTitle5')]
+    self.stations_pool = [Station.new('SomeTitle1'), Station.new('SomeTitle2'),
+                          Station.new('SomeTitle3'), Station.new('SomeTitle4'), Station.new('SomeTitle5')]                    
     self.routes_pool = [Route.new([stations_pool[0], stations_pool[1], stations_pool[2], stations_pool[3]]),
                         Route.new([stations_pool[4], stations_pool[3]])]
-    PassengerWagon.new(1, 'MaxIndustries')
-    PassengerWagon.new(2, 'MaxIndustries')
-    CargoWagon.new(3, 'MaxIndustries')
-    PassengerTrain.new(1984, 'MaxIndustries')
-    Train.find_inst(1984).wagon_connect(Wagon.find_inst(1))
+    PassengerWagon.new('198-ab', 'MaxIndustries')
+    PassengerWagon.new('198-aa', 'MaxIndustries')
+    CargoWagon.new('198-a1', 'MaxIndustries')
+    PassengerTrain.new('198-ad', 'MaxIndustries')
+    Train.find_inst('198-ad').wagon_connect(Wagon.find_inst('198-ab'))
   end
 
   private
@@ -83,114 +83,164 @@ class RailRoad
     case input
     when 1
       puts 'Specify train number and company: '
-      puts 'This number is already taken' unless create_passenger_train(gets.to_i, gets.to_s)
+      puts "Successfully created train: #{create_passenger_train.number}"
     when 2
       puts 'Specify train number and company: '
-      puts 'This number is already taken' unless create_cargo_train(gets.to_i, gets.to_s)
+      puts "Successfully created train: #{create_cargo_train.number}"
     when 3
       puts 'Specify station title: '
-      create_station(gets.chomp)
+      puts "Successfully created station: #{create_station.last.title}"
     when 4
-      puts 'Specify route number: '
-      create_route(gets.to_i)
+      puts 'Specify route stations'
+      puts "Successfully created route: #{create_route.last.station_titles}"
     when 5
-      puts 'Specify train number and company: '
-      puts 'This number is already taken' unless PassengerWagon.new(gets.to_i, gets.to_s)
+      puts 'Specify wagon number and company: '
+      puts "Successfully created wagon: #{create_passenger_wagon.number}"
     when 6
-      puts 'Specify train number and company: '
-      puts 'This number is already taken' unless CargoWagon.new(gets.to_i, gets.to_s)
+      puts 'Specify wagon number and company: '
+      puts "Successfully created wagon: #{create_cargo_wagon.number}"
     end
   end
 
-  def create_cargo_wagon(number, prodaction_company)
-    CargoWagon.new(number, prodaction_company) if Wagon.find_inst(number).nil?
+  def create_cargo_wagon
+    CargoWagon.new(gets.chomp, gets.chomp)
+  rescue RuntimeError => e
+    puts e.inspect
+    create_cargo_wagon
   end
 
-  def create_passenger_wagon(number, prodaction_company)
-    PassengerWagon.new(number, prodaction_company) if Wagon.find_inst(number).nil?
+  def create_passenger_wagon
+    PassengerWagon.new(gets.chomp, gets.chomp)
+  rescue RuntimeError => e
+    puts e.inspect
+    create_passenger_wagon
   end
 
-  def create_cargo_train(number, prodaction_company)
-    CargoTrain.new(number, prodaction_company) if Train.find_inst(number).nil?
+  def create_cargo_train
+    CargoTrain.new(gets.chomp, gets.chomp)
+  rescue RuntimeError => e
+    puts e.inspect
+    create_cargo_train
   end
 
-  def create_passenger_train(number, prodaction_company)
-    PassengerTrain.new(number, prodaction_company) if Train.find_inst(number).nil?
+  def create_passenger_train
+    PassengerTrain.new(gets.chomp, gets.chomp)
+  rescue RuntimeError => e
+    puts e.inspect
+    create_passenger_train
   end
 
-  def create_station(title)
-    stations_pool.push(Station.new(title))
+  def create_station
+    stations_pool.push(Station.new(gets.chomp))
+  rescue RuntimeError => e
+    puts e.inspect
+    create_station
   end
 
-  def create_route(number)
-    if routes_pool[number].nil?
-      stations_pool.each_with_index { |x, index| puts "#{index + 1}: #{x.title}" }
-      routes_pool[number] = Route.new(stations_selection)
-    else puts 'This number is already taken or you make an error'
-    end
-  end
-
-  def stations_selection
-    add_station_array = []
-    loop do
-      index = gets.chomp
-      case index
-      when '0'
-        return add_station_array
-      when /\d+/
-        add_station_array.push(stations_pool[index.to_i - 1])
-      else
-        return nil
-      end
-    end
+  def create_route
+    puts 'Select first station!'
+    first_station = station_selection
+    puts 'Select Second station!'
+    second_station = station_selection
+    routes_pool.push(Route.new([first_station, second_station]))
+  rescue RuntimeError => e
+    puts e.inspect
+    create_route
   end
 
   def assigning(input)
     case input
     when 1
-      wagon_mount(train_selection, wagon_selection)
+      wagon_mount
     when 2
-      wagon_unmount(train_selection, wagon_selection)
+      wagon_unmount
     when 3
-      assign_route_to_train(train_selection, route_selection)
+      assign_route_to_train
     when 4
-      add_station_to_the_route(route_selection, stations_selection)
+      add_station_to_the_route
     when 5
-      remove_station_from_the_route(route_selection, stations_selection)
+      remove_station_from_the_route
     end
   end
 
-  def wagon_mount(train, wagon)
-    train.wagon_connect(wagon) unless train.nil?
+  def wagon_mount
+    train_selection.wagon_connect(wagon_selection)
+  rescue RuntimeError => e
+    puts e.inspect
+    wagon_mount
   end
 
-  def wagon_unmount(train, wagon)
-    train.wagon_disconnect(wagon) unless train.nil?
+  def wagon_unmount
+    train_selection.wagon_disconnect(wagon_selection)
+  rescue RuntimeError => e
+    puts e.inspect
+    wagon_unmount
   end
 
   def train_selection
-    Train.all.each { |x| puts "#{x.number}: #{x.class}" }
-    Train.find_inst(gets.to_i)
+    trains_list
+    train = Train.find_inst(gets.chomp)
+    train_validation!(train)
+    train
+  rescue RuntimeError => e
+    puts e.inspect
+    train_selection
   end
 
   def wagon_selection
-    Wagon.all.each { |x| puts "#{x.number}: #{x.class}" }
-    Wagon.find_inst(gets.to_i)
+    wagons_list
+    wagon = Wagon.find_inst(gets.chomp)
+    wagon_validation!(wagon)
+    wagon
+  rescue RuntimeError => e
+    puts e.inspect
+    wagon_selection
   end
 
+  def station_selection
+    stations_list
+    station = stations_pool[gets.to_i]
+    station_validation!(station)
+    station
+  rescue RuntimeError => e
+    puts e.inspect
+    station_selection
+  end
+  
   def route_selection
-    routes_pool.each_with_index do |item, index|
-      puts "#{index}: #{item.station_titles}"
-    end
-    routes_pool[gets.to_i]
+    routes_list
+    route = routes_pool[gets.to_i]
+    route_validation!(route)
+    route
+  rescue RuntimeError => e
+    puts e.inspect
+    route_selection
+  end
+  
+  def trains_list
+    Array(Train.all).each { |x| puts "#{x.number}: #{x.class}" }
+  end
+  
+  def wagons_list
+    Array(Wagon.all).each { |x| puts "#{x.number}: #{x.class}" }
+  end
+  
+  def stations_list
+    stations_pool.each_with_index { |x, index| puts "#{index}: #{x.title}" }
+  end
+  
+  def routes_list
+    routes_pool.each_with_index { |item, index| puts "#{index}: #{item.station_titles}" }
   end
 
-  def assign_route_to_train(train, route)
-    train.train_route = route unless train.nil?
+  def assign_route_to_train
+    train_selection.train_route = route_selection
+  rescue RuntimeError => e
+    puts e.inspect
+    assign_route_to_train
   end
 
   def moving_train(train)
-    return nil if train.route.nil?
     moving_text
     direction = 1
     until direction == 0
@@ -207,42 +257,57 @@ class RailRoad
   end
 
   def train_move_forward(train)
-    puts "Train leaving: #{train.current_station.title}, next station: #{train.next_station.title}"
     train.move_forward
     if train.next_station.nil?
       train.route.route_reverse
-      puts 'You have reach your destination, route rebuilt'
       train.train_route = train.route
-    else
-      puts "Train arriving to: #{train.current_station.title}, next station: #{train.next_station.title}"
     end
   end
 
   def train_move_backward(train)
-    puts "Train leaving: #{train.current_station.title}, next station: #{train.passed_station.title}"
     train.move_backward
     if train.passed_station.nil?
       train.route.route_reverse
-      puts 'You have reach your destination, route rebuilt'
       train.train_route = train.route
     else
-      puts "Train arriving to: #{train.current_station.title}, next station: #{train.passed_station.title}"
     end
   end
 
-  def station_list
-    Station.all.each do |x|
+  def station_list_info
+    Array(Station.all).each do |x|
       puts "On station #{x.title}:
     Count of cargo trains: #{x.get_sorted_list(CargoTrain)}
     Count of passenger trains: #{x.get_sorted_list(PassengerTrain)}" end
   end
-
-  def remove_station_from_the_route(route, station)
-    station.each { |x| route.del_station(x) }
+  
+  def remove_station_from_the_route
+    route_selection.del_station(station_selection)
+  rescue RuntimeError => e
+    puts e.inspect
+    remove_station_from_the_route
   end
 
-  def add_station_to_the_route(route, station)
-    station.each { |x| route.add_station(x) }
+  def add_station_to_the_route
+    route_selection.add_station(station_selection)
+  rescue RuntimeError => e
+    puts e.inspect
+    add_station_to_the_route
+  end
+  
+  def train_validation!(train)
+    raise 'You didn\'t select any train!' if train.nil?
+  end
+  
+  def wagon_validation!(wagon)
+    raise 'You didn\'t select any wagon!' if wagon.nil?
+  end
+  
+  def station_validation!(station)
+    raise 'You didn\'t select any station!' if station.nil?
+  end
+  
+  def route_validation!(route)
+    raise 'You didn\'t select any route!' if route.nil?
   end
 end
 
