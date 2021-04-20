@@ -6,10 +6,10 @@ class Train
   include Manufacturer
   include InstanceCounter
   include TrainValidation
-  
-  attr_reader :wagons,  :route
+
+  attr_reader :wagons, :route
   attr_accessor :speed
-  
+
   def initialize(number, manufacturer)
     self.manufacturer = manufacturer
     self.number = number
@@ -31,10 +31,10 @@ class Train
     wagons.delete(wagon)
   end
 
-  def process_wagons(&block)
-    wagons.each { |wagon| block.call(wagon) }
+  def process_wagons
+    wagons.each { |wagon| yield(wagon) }
   end
-  
+
   def speed_gain(velocity)
     @speed += velocity
   end
@@ -57,7 +57,7 @@ class Train
     current_station.arriving_train(self)
   end
 
-  def move_backward  
+  def move_backward
     route_validation!
     current_station.departure_train(self)
     @current_station_index -= 1
@@ -80,22 +80,22 @@ class Train
   end
 
   private
-  
-  attr_writer  :route, :wagons
+
+  attr_writer :route, :wagons
   attr_accessor :current_station_index
-  
+
   def type_validation!(wagon)
-    raise "Invalid type!" unless type.eql?(wagon.type)
+    raise 'Invalid type!' unless type.eql?(wagon.type)
   end
-  
+
   def speed_validation!
-    raise "Speed is not zero!" unless speed == 0
+    raise 'Speed is not zero!' unless speed == 0
   end
-  
+
   def wagon_connection_validation!(wagon)
-    raise "Selected wagon not connected!" unless wagons.include?(wagon)
+    raise 'Selected wagon not connected!' unless wagons.include?(wagon)
   end
-  
+
   def route_validation!
     raise "Route couldn't be nil!" if route.nil?
   end

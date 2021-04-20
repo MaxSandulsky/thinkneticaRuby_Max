@@ -7,9 +7,9 @@ class Route
 
   def initialize(stations = [])
     @stations = stations
-    
+
     validation!
-    
+
     self.class.add_instance(self)
   end
 
@@ -38,19 +38,19 @@ class Route
     stations.each { |x| titles << x.title }
     titles
   end
-  
+
   private
-  
+
   def validation!
-    raise "You need at least 2 stations!" if stations.nil?
-    raise "You need at least 2 stations!" if stations.length < 2
+    raise 'You need at least 2 stations!' if stations.nil?
+    raise 'You need at least 2 stations!' if stations.length < 2
     raise 'Your origination couldn\'t be your destination!' if origination == destination
   end
-  
+
   def valid?
     validation!
     true
-  rescue
+  rescue StandardError
     false
   end
 end

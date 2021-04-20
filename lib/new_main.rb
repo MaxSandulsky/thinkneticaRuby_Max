@@ -37,14 +37,14 @@ class RailRoad
 
   def seed
     self.stations_pool = [Station.new('SomeTitle1'), Station.new('SomeTitle2'),
-                          Station.new('SomeTitle3'), Station.new('SomeTitle4'), Station.new('SomeTitle5')]                    
+                          Station.new('SomeTitle3'), Station.new('SomeTitle4'), Station.new('SomeTitle5')]
     self.routes_pool = [Route.new([stations_pool[0], stations_pool[1], stations_pool[2], stations_pool[3]]),
                         Route.new([stations_pool[4], stations_pool[3]])]
     PassengerWagon.new('198-ab', 'MaxIndustries', 100)
     PassengerWagon.new('198-aa', 'MaxIndustries', 100)
     CargoWagon.new('198-a1', 'MaxIndustries', 150)
     PassengerTrain.new('198-ad', 'MaxIndustries')
-    Train.find_inst('198-ad').train_route = (routes_pool[0])
+    Train.find_inst('198-ad').train_route = routes_pool[0]
     Train.find_inst('198-ad').wagon_connect(Wagon.find_inst('198-ab'))
   end
 
@@ -91,13 +91,13 @@ class RailRoad
     puts 'Press "2" to see connected wagons'
     puts 'Press anything else to go back'
   end
-  
+
   def wagons_space_text
     puts 'Press "1" and specify cell to take place in wagon'
     puts 'Press "2" and specify cell to move from wagon'
     puts 'Press anything else to go back'
   end
-  
+
   def creating(input)
     case input
     when 1
@@ -225,7 +225,7 @@ class RailRoad
     puts e.inspect
     station_selection
   end
-  
+
   def route_selection
     routes_list
     route = routes_pool[gets.to_i]
@@ -235,19 +235,19 @@ class RailRoad
     puts e.inspect
     route_selection
   end
-  
+
   def trains_list
     Train.all.each { |x| puts "#{x.number}: #{x.class}" }
   end
-  
+
   def wagons_list
     Wagon.all.each { |x| puts "#{x.number}: #{x.class}" }
   end
-  
+
   def stations_list
     stations_pool.each_with_index { |x, index| puts "#{index}: #{x.title}" }
   end
-  
+
   def routes_list
     routes_pool.each_with_index { |item, index| puts "#{index}: #{item.station_titles}" }
   end
@@ -288,10 +288,9 @@ class RailRoad
     if train.passed_station.nil?
       train.route.route_reverse
       train.train_route = train.route
-    else
     end
   end
-  
+
   def informant(input)
     case input
     when 1
@@ -309,7 +308,7 @@ class RailRoad
       wagon_selection.empty_space(gets.to_i)
     end
   end
-  
+
   def remove_station_from_the_route
     route_selection.del_station(station_selection)
   rescue RuntimeError => e
@@ -323,19 +322,19 @@ class RailRoad
     puts e.inspect
     add_station_to_the_route
   end
-  
+
   def train_validation!(train)
     raise 'You didn\'t select any train!' if train.nil?
   end
-  
+
   def wagon_validation!(wagon)
     raise 'You didn\'t select any wagon!' if wagon.nil?
   end
-  
+
   def station_validation!(station)
     raise 'You didn\'t select any station!' if station.nil?
   end
-  
+
   def route_validation!(route)
     raise 'You didn\'t select any route!' if route.nil?
   end

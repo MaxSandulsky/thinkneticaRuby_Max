@@ -32,9 +32,9 @@ module InstanceCounter
       self.instances = instances.to_a << instance
       self.count = count.to_i + 1
     end
-    
-    protected 
-    
+
+    protected
+
     attr_accessor :instances
   end
 
