@@ -23,11 +23,12 @@ class Station
   def departure_train(train)
     trains.delete(train) if trains.include?(train)
   end
-
-  def get_sorted_list(sortby)
-    trains_count = trains.select { |train| train.class == sortby }
-    trains_count.length
+  
+  def process_trains(&block)
+    trains.each { |train| block.call(train) }
   end
+  
+  private
   
   def validation!
     raise 'Station title can\'t be nil' if title.nil?

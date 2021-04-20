@@ -39,6 +39,8 @@ class Route
     titles
   end
   
+  private
+  
   def validation!
     raise "You need at least 2 stations!" if stations.nil?
     raise "You need at least 2 stations!" if stations.length < 2

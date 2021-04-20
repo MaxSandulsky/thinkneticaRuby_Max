@@ -11,7 +11,7 @@ module InstanceCounter
   end
 
   module ClassCounterMethods
-    attr_accessor :instances, :count
+    attr_accessor :count
 
     def inherited(subclass)
       subclass.instance_eval do
@@ -32,6 +32,10 @@ module InstanceCounter
       self.instances = instances.to_a << instance
       self.count = count.to_i + 1
     end
+    
+    protected 
+    
+    attr_accessor :instances
   end
 
   module InstanceMethods

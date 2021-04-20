@@ -24,7 +24,11 @@ class RailRoad
       when 3
         moving_train(train_selection)
       when 4
-        station_list_info
+        information_text
+        informant(gets.to_i)
+      when 5
+        wagons_space_text
+        placementing(gets.to_i)
       else
         quit_flag = true
       end
@@ -36,10 +40,11 @@ class RailRoad
                           Station.new('SomeTitle3'), Station.new('SomeTitle4'), Station.new('SomeTitle5')]                    
     self.routes_pool = [Route.new([stations_pool[0], stations_pool[1], stations_pool[2], stations_pool[3]]),
                         Route.new([stations_pool[4], stations_pool[3]])]
-    PassengerWagon.new('198-ab', 'MaxIndustries')
-    PassengerWagon.new('198-aa', 'MaxIndustries')
-    CargoWagon.new('198-a1', 'MaxIndustries')
+    PassengerWagon.new('198-ab', 'MaxIndustries', 100)
+    PassengerWagon.new('198-aa', 'MaxIndustries', 100)
+    CargoWagon.new('198-a1', 'MaxIndustries', 150)
     PassengerTrain.new('198-ad', 'MaxIndustries')
+    Train.find_inst('198-ad').train_route = (routes_pool[0])
     Train.find_inst('198-ad').wagon_connect(Wagon.find_inst('198-ab'))
   end
 
@@ -50,7 +55,8 @@ class RailRoad
     puts 'Press "1" to create an object'
     puts 'Press "2" to assign a route or change the number of wagons'
     puts 'Press "3" to move a train'
-    puts 'Press "4" to view the list of stations and the list of trains at the station'
+    puts 'Press "4" to view the list of trains at the station or connected wagons'
+    puts 'Press "5" to take place or move from wagon'
     puts 'Press anything else to exit'
   end
 
@@ -71,6 +77,7 @@ class RailRoad
     puts 'Press "3" to specify a route to the train'
     puts 'Press "4" to add station to the route'
     puts 'Press "5" to delete station from the route'
+    puts 'Press anything else to go back'
   end
 
   def moving_text
@@ -79,6 +86,18 @@ class RailRoad
     puts 'Press anything else to go back'
   end
 
+  def information_text
+    puts 'Press "1" to see trains on station'
+    puts 'Press "2" to see connected wagons'
+    puts 'Press anything else to go back'
+  end
+  
+  def wagons_space_text
+    puts 'Press "1" and specify cell to take place in wagon'
+    puts 'Press "2" and specify cell to move from wagon'
+    puts 'Press anything else to go back'
+  end
+  
   def creating(input)
     case input
     when 1
@@ -218,11 +237,11 @@ class RailRoad
   end
   
   def trains_list
-    Array(Train.all).each { |x| puts "#{x.number}: #{x.class}" }
+    Train.all.each { |x| puts "#{x.number}: #{x.class}" }
   end
   
   def wagons_list
-    Array(Wagon.all).each { |x| puts "#{x.number}: #{x.class}" }
+    Wagon.all.each { |x| puts "#{x.number}: #{x.class}" }
   end
   
   def stations_list
@@ -272,12 +291,23 @@ class RailRoad
     else
     end
   end
+  
+  def informant(input)
+    case input
+    when 1
+      station_selection.process_trains { |train| puts "Train number: #{train.number}, type: #{train.type}, number of wagons: #{train.wagons.length}" }
+    when 2
+      train_selection.process_wagons { |wagon| puts "Wagon number: #{wagon.number}, type: #{wagon.type}, space occupied: #{wagon.occupied} and space left: #{wagon.free_space}" }
+    end
+  end
 
-  def station_list_info
-    Array(Station.all).each do |x|
-      puts "On station #{x.title}:
-    Count of cargo trains: #{x.get_sorted_list(CargoTrain)}
-    Count of passenger trains: #{x.get_sorted_list(PassengerTrain)}" end
+  def placementing(input)
+    case input
+    when 1
+      wagon_selection.take_space(gets.to_i)
+    when 2
+      wagon_selection.empty_space(gets.to_i)
+    end
   end
   
   def remove_station_from_the_route

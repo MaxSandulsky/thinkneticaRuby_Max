@@ -31,6 +31,10 @@ class Train
     wagons.delete(wagon)
   end
 
+  def process_wagons(&block)
+    wagons.each { |wagon| block.call(wagon) }
+  end
+  
   def speed_gain(velocity)
     @speed += velocity
   end
@@ -77,8 +81,8 @@ class Train
 
   private
   
-  attr_writer  :route
-  attr_accessor :current_station_index, :wagons
+  attr_writer  :route, :wagons
+  attr_accessor :current_station_index
   
   def type_validation!(wagon)
     raise "Invalid type!" unless type.eql?(wagon.type)
