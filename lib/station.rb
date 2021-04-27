@@ -1,7 +1,9 @@
 require_relative 'instance_counter.rb'
+require_relative 'validation.rb'
 
 class Station
   include InstanceCounter
+  include Validation
 
   attr_reader :title, :trains
 
@@ -11,7 +13,8 @@ class Station
     @trains = []
     @title = title
 
-    validation!
+    self.class.validate(obj: title, validation: 'presence')
+    self.class.validate(obj: title, regexp: TITLE_FORMAT, validation: 'format')
 
     self.class.add_instance(self)
   end
@@ -26,19 +29,5 @@ class Station
 
   def process_trains
     trains.each { |train| yield(train) }
-  end
-
-  private
-
-  def validation!
-    raise 'Station title can\'t be nil' if title.nil?
-    raise 'Station title must start with a capital letter' if title !~ TITLE_FORMAT
-  end
-
-  def valid?
-    validation!
-    true
-  rescue StandardError
-    false
   end
 end

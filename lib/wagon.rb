@@ -3,21 +3,21 @@
 # and open the template in the editor.
 require_relative 'instance_counter.rb'
 require_relative 'manufacturer.rb'
-require_relative 'train_validation.rb'
+require_relative 'validation.rb'
 
 class Wagon
   include Manufacturer
   include InstanceCounter
-  include TrainValidation
+  include Validation
+
+  NUMBER_FORMAT = /([a-zA-Z]|\d){3}-?([a-zA-Z]|\d){2}$/
 
   attr_reader :max_space
 
   def initialize(number, manufacturer)
     self.manufacturer = manufacturer
     self.number = number
-
-    validation!
-
+    validate! self, self.class, NUMBER_FORMAT, number
     register_instance
   end
 
@@ -26,7 +26,7 @@ class Wagon
       attr_reader :max_space
 
       def take_space(cell_number)
-        free_space_validation!(free_space)
+        return if free_space <= 0
         space.insert(cell_number, 1)
       end
 
@@ -52,10 +52,6 @@ class Wagon
 
       attr_accessor :space
       attr_writer :max_space
-
-      def free_space_validation!(free_space)
-        raise 'Not enough space!' if free_space <= 0
-      end
     end
   end
 end

@@ -6,6 +6,6 @@ require_relative 'train.rb'
 class CargoTrain < Train
   def initialize(number, prodaction_company)
     super(number, prodaction_company)
-    self.type = 'Cargo'
+    self.wagons_type = 'CargoWagon'
   end
 end

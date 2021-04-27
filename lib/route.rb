@@ -1,14 +1,19 @@
 require_relative 'instance_counter.rb'
+require_relative 'validation.rb'
+require_relative 'accessors.rb'
 
 class Route
   include InstanceCounter
+  include Validation
+  extend Accessors
 
-  attr_accessor :stations
+  strong_attr_accessor(type: 'Station', name: 'stations')
 
   def initialize(stations = [])
     @stations = stations
 
-    validation!
+    self.class.validate(obj: stations.first, validation: 'presence')
+    self.class.validate(obj: stations.last, validation: 'presence')
 
     self.class.add_instance(self)
   end
@@ -37,20 +42,5 @@ class Route
     titles = []
     stations.each { |x| titles << x.title }
     titles
-  end
-
-  private
-
-  def validation!
-    raise 'You need at least 2 stations!' if stations.nil?
-    raise 'You need at least 2 stations!' if stations.length < 2
-    raise 'Your origination couldn\'t be your destination!' if origination == destination
-  end
-
-  def valid?
-    validation!
-    true
-  rescue StandardError
-    false
   end
 end

@@ -4,8 +4,11 @@ require_relative 'passenger_train.rb'
 require_relative 'cargo_train.rb'
 require_relative 'passenger_wagon.rb'
 require_relative 'cargo_wagon.rb'
+require_relative 'validation.rb'
 
 class RailRoad
+  include Validation
+
   attr_accessor :stations_pool, :routes_pool
 
   def initialize; end
@@ -44,6 +47,8 @@ class RailRoad
     PassengerWagon.new('198-aa', 'MaxIndustries', 100)
     CargoWagon.new('198-a1', 'MaxIndustries', 150)
     PassengerTrain.new('198-ad', 'MaxIndustries')
+    PassengerTrain.new('198-as', 'MaxIndustries')
+    CargoTrain.new('198-aq', 'MaxIndustries')
     Train.find_inst('198-ad').train_route = routes_pool[0]
     Train.find_inst('198-ad').wagon_connect(Wagon.find_inst('198-ab'))
   end
@@ -159,8 +164,10 @@ class RailRoad
   def create_route
     puts 'Select first station!'
     first_station = station_selection
-    puts 'Select Second station!'
+    self.class.validate(obj: first_station, validation: 'presence')
+    puts '#Select Second station!'
     second_station = station_selection
+    self.class.validate(obj: second_station, validation: 'presence')
     routes_pool.push(Route.new([first_station, second_station]))
   rescue RuntimeError => e
     puts e.inspect
@@ -183,14 +190,20 @@ class RailRoad
   end
 
   def wagon_mount
-    train_selection.wagon_connect(wagon_selection)
+    wagon = wagon_selection
+    train = train_selection
+    self.class.validate(obj: wagon, type: train.wagons_type, validation: 'type')
+    train.wagon_connect(wagon)
   rescue RuntimeError => e
     puts e.inspect
     wagon_mount
   end
 
   def wagon_unmount
-    train_selection.wagon_disconnect(wagon_selection)
+    wagon = wagon_selection
+    train = train_selection
+    self.class.validate(obj: wagon, type: train.wagons_type, validation: 'type')
+    train.wagon_disconnect(wagon)
   rescue RuntimeError => e
     puts e.inspect
     wagon_unmount
@@ -199,7 +212,7 @@ class RailRoad
   def train_selection
     trains_list
     train = Train.find_inst(gets.chomp)
-    train_validation!(train)
+    self.class.validate(obj: train, validation: 'presence')
     train
   rescue RuntimeError => e
     puts e.inspect
@@ -209,7 +222,7 @@ class RailRoad
   def wagon_selection
     wagons_list
     wagon = Wagon.find_inst(gets.chomp)
-    wagon_validation!(wagon)
+    self.class.validate(obj: wagon, validation: 'presence')
     wagon
   rescue RuntimeError => e
     puts e.inspect
@@ -218,8 +231,9 @@ class RailRoad
 
   def station_selection
     stations_list
-    station = stations_pool[gets.to_i]
-    station_validation!(station)
+    return if (input = gets.to_i - 1) < 0
+    station = stations_pool[input]
+    self.class.validate(obj: station, validation: 'presence')
     station
   rescue RuntimeError => e
     puts e.inspect
@@ -228,8 +242,9 @@ class RailRoad
 
   def route_selection
     routes_list
-    route = routes_pool[gets.to_i]
-    route_validation!(route)
+    return if (input = gets.to_i - 1) < 0
+    route = routes_pool[input]
+    self.class.validate(obj: route, validation: 'presence')
     route
   rescue RuntimeError => e
     puts e.inspect
@@ -245,11 +260,11 @@ class RailRoad
   end
 
   def stations_list
-    stations_pool.each_with_index { |x, index| puts "#{index}: #{x.title}" }
+    stations_pool.each_with_index { |x, index| puts "#{index + 1}: #{x.title}" }
   end
 
   def routes_list
-    routes_pool.each_with_index { |item, index| puts "#{index}: #{item.station_titles}" }
+    routes_pool.each_with_index { |item, index| puts "#{index + 1}: #{item.station_titles}" }
   end
 
   def assign_route_to_train
@@ -294,9 +309,9 @@ class RailRoad
   def informant(input)
     case input
     when 1
-      station_selection.process_trains { |train| puts "Train number: #{train.number}, type: #{train.type}, number of wagons: #{train.wagons.length}" }
+      station_selection.process_trains { |train| puts "Train number: #{train.number}, type: #{train.wagons_type}, number of wagons: #{train.wagons.length}" }
     when 2
-      train_selection.process_wagons { |wagon| puts "Wagon number: #{wagon.number}, type: #{wagon.type}, space occupied: #{wagon.occupied} and space left: #{wagon.free_space}" }
+      train_selection.process_wagons { |wagon| puts "Wagon number: #{wagon.number}, type: #{wagon.class}, space occupied: #{wagon.occupied} and space left: #{wagon.free_space}" }
     end
   end
 
@@ -310,33 +325,25 @@ class RailRoad
   end
 
   def remove_station_from_the_route
-    route_selection.del_station(station_selection)
+    route = route_selection
+    station = station_selection
+    self.class.validate(obj: route, validation: 'presence')
+    self.class.validate(obj: station, validation: 'presence')
+    route.del_station(station)
   rescue RuntimeError => e
     puts e.inspect
     remove_station_from_the_route
   end
 
   def add_station_to_the_route
-    route_selection.add_station(station_selection)
+    route = route_selection
+    station = station_selection
+    self.class.validate(obj: route, validation: 'presence')
+    self.class.validate(obj: station, validation: 'presence')
+    route.add_station(station)
   rescue RuntimeError => e
     puts e.inspect
     add_station_to_the_route
-  end
-
-  def train_validation!(train)
-    raise 'You didn\'t select any train!' if train.nil?
-  end
-
-  def wagon_validation!(wagon)
-    raise 'You didn\'t select any wagon!' if wagon.nil?
-  end
-
-  def station_validation!(station)
-    raise 'You didn\'t select any station!' if station.nil?
-  end
-
-  def route_validation!(route)
-    raise 'You didn\'t select any route!' if route.nil?
   end
 end
 
