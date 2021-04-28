@@ -164,10 +164,10 @@ class RailRoad
   def create_route
     puts 'Select first station!'
     first_station = station_selection
-    self.class.validate(obj: first_station, validation: 'presence')
+    first_station.validate
     puts '#Select Second station!'
     second_station = station_selection
-    self.class.validate(obj: second_station, validation: 'presence')
+    second_station.validate
     routes_pool.push(Route.new([first_station, second_station]))
   rescue RuntimeError => e
     puts e.inspect
@@ -192,7 +192,7 @@ class RailRoad
   def wagon_mount
     wagon = wagon_selection
     train = train_selection
-    self.class.validate(obj: wagon, type: train.wagons_type, validation: 'type')
+    wagon.validate
     train.wagon_connect(wagon)
   rescue RuntimeError => e
     puts e.inspect
@@ -202,7 +202,7 @@ class RailRoad
   def wagon_unmount
     wagon = wagon_selection
     train = train_selection
-    self.class.validate(obj: wagon, type: train.wagons_type, validation: 'type')
+    wagon.validate
     train.wagon_disconnect(wagon)
   rescue RuntimeError => e
     puts e.inspect
@@ -212,7 +212,7 @@ class RailRoad
   def train_selection
     trains_list
     train = Train.find_inst(gets.chomp)
-    self.class.validate(obj: train, validation: 'presence')
+    train.validate
     train
   rescue RuntimeError => e
     puts e.inspect
@@ -222,7 +222,7 @@ class RailRoad
   def wagon_selection
     wagons_list
     wagon = Wagon.find_inst(gets.chomp)
-    self.class.validate(obj: wagon, validation: 'presence')
+    wagon.validate
     wagon
   rescue RuntimeError => e
     puts e.inspect
@@ -233,7 +233,7 @@ class RailRoad
     stations_list
     return if (input = gets.to_i - 1) < 0
     station = stations_pool[input]
-    self.class.validate(obj: station, validation: 'presence')
+    station.validate
     station
   rescue RuntimeError => e
     puts e.inspect
@@ -244,7 +244,7 @@ class RailRoad
     routes_list
     return if (input = gets.to_i - 1) < 0
     route = routes_pool[input]
-    self.class.validate(obj: route, validation: 'presence')
+    route.validate
     route
   rescue RuntimeError => e
     puts e.inspect
@@ -277,7 +277,7 @@ class RailRoad
   def moving_train(train)
     moving_text
     direction = 1
-    until direction == 0
+    until direction.zero?
       direction = gets.to_i
       case direction
       when 1
@@ -296,6 +296,8 @@ class RailRoad
       train.route.route_reverse
       train.train_route = train.route
     end
+  rescue NoMethodError
+    puts 'No route'
   end
 
   def train_move_backward(train)
@@ -304,6 +306,8 @@ class RailRoad
       train.route.route_reverse
       train.train_route = train.route
     end
+  rescue NoMethodError
+    puts 'No route'
   end
 
   def informant(input)
@@ -327,8 +331,8 @@ class RailRoad
   def remove_station_from_the_route
     route = route_selection
     station = station_selection
-    self.class.validate(obj: route, validation: 'presence')
-    self.class.validate(obj: station, validation: 'presence')
+    route.validate
+    station.validate
     route.del_station(station)
   rescue RuntimeError => e
     puts e.inspect
@@ -338,8 +342,8 @@ class RailRoad
   def add_station_to_the_route
     route = route_selection
     station = station_selection
-    self.class.validate(obj: route, validation: 'presence')
-    self.class.validate(obj: station, validation: 'presence')
+    route.validate
+    station.validate
     route.add_station(station)
   rescue RuntimeError => e
     puts e.inspect

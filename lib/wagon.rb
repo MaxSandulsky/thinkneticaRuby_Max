@@ -10,21 +10,17 @@ class Wagon
   include InstanceCounter
   include Validation
 
-  NUMBER_FORMAT = /([a-zA-Z]|\d){3}-?([a-zA-Z]|\d){2}$/
-
-  attr_reader :max_space
-
   def initialize(number, manufacturer)
     self.manufacturer = manufacturer
     self.number = number
-    validate! self, self.class, NUMBER_FORMAT, number
+
     register_instance
   end
 
   def self.inherited(subclass)
     subclass.class_eval do
       attr_reader :max_space
-
+      
       def take_space(cell_number)
         return if free_space <= 0
         space.insert(cell_number, 1)
@@ -53,5 +49,23 @@ class Wagon
       attr_accessor :space
       attr_writer :max_space
     end
+  end
+  
+  def validate
+    manufacturer_validation
+    number_validation
+  end
+  
+  private
+  
+  def manufacturer_validation
+    self.class.validate(obj: manufacturer, val: 'presence')
+    self.class.validate(obj: manufacturer, val: 'type', type: String)
+  end
+  
+  def number_validation
+    self.class.validate(obj: number, val: 'presence')
+    self.class.validate(obj: number, val: 'format', reg: NUMBER_FORMAT)
+    self.class.validate(obj: number, val: 'type', type: String)
   end
 end

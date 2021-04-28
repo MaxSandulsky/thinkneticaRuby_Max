@@ -3,6 +3,9 @@
 # and open the template in the editor.
 
 module Validation
+  NUMBER_FORMAT = /([a-zA-Z]|\d){3}-?([a-zA-Z]|\d){2}$/
+  TITLE_FORMAT = /^[A-Z][a-z]+/
+
   class << self
     def included(base)
       base.extend Classmethods
@@ -13,27 +16,24 @@ module Validation
   module Classmethods
     def validate(args)
       @obj = args[:obj]
-      @validation = args[:validation]
-      @regexp = args[:regexp] || //
+      @val = args[:val]
+      @reg = args[:reg] || //
       @type = args[:type] || Object
 
-      raise 'Object not presented!' if @validation == 'presence' && @obj.nil?
-      raise "#{@obj} in the wrong format!" if @validation == 'format' && @obj !~ @regexp
-      raise "Wrong object type! Expected #{@type}, but got #{@obj.class}" if @validation == 'type' && @obj.class.to_s != @type.to_s
+      raise 'Object not presented!' if @val == 'presence' && @obj.nil?
+      raise "#{@obj} in the wrong format!" if @val == 'format' && @obj !~ @reg
+      raise "Wrong object type! Expected #{@type}, but got #{@obj.class}" if @val == 'type' && @obj.class.to_s != @type.to_s
     end
   end
 
   module InstanceMethods
-    def validate!(attribute, expected_type, naming_format, number)
-      self.class.validate(obj: attribute, validation: 'presence')
-      self.class.validate(obj: number, regexp: naming_format, validation: 'format')
-      self.class.validate(obj: attribute, type: expected_type, validation: 'type')
-    end
+    def validate!; end
 
-    def valid?(attribute, expected_type, naming_format, number)
-      validate!(attribute, expected_type, naming_format, number)
+    def valid?
+      validate
       true
-    rescue StandardError
+    rescue RuntimeError => e
+      puts e.inspect
       false
     end
   end

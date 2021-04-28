@@ -7,14 +7,9 @@ class Station
 
   attr_reader :title, :trains
 
-  TITLE_FORMAT = /^[A-Z][a-z]+/
-
   def initialize(title)
     @trains = []
     @title = title
-
-    self.class.validate(obj: title, validation: 'presence')
-    self.class.validate(obj: title, regexp: TITLE_FORMAT, validation: 'format')
 
     self.class.add_instance(self)
   end
@@ -29,5 +24,26 @@ class Station
 
   def process_trains
     trains.each { |train| yield(train) }
+  end
+
+  def validate
+    title_validation
+    trains_validation
+  end
+
+  private
+
+  def title_validation
+    self.class.validate(obj: title, val: 'presence')
+    self.class.validate(obj: title, val: 'format', reg: TITLE_FORMAT)
+    self.class.validate(obj: title, val: 'type', type: String)
+  end
+
+  def trains_validation
+    process_trains do |train|
+      self.class.validate(obj: train, val: 'presence')
+      self.class.validate(obj: train.number, val: 'format', reg: NUMBER_FORMAT)
+      self.class.validate(obj: train, val: 'type', type: PassengerTrain)
+    end
   end
 end

@@ -12,9 +12,6 @@ class Route
   def initialize(stations = [])
     @stations = stations
 
-    self.class.validate(obj: stations.first, validation: 'presence')
-    self.class.validate(obj: stations.last, validation: 'presence')
-
     self.class.add_instance(self)
   end
 
@@ -42,5 +39,15 @@ class Route
     titles = []
     stations.each { |x| titles << x.title }
     titles
+  end
+
+  def validate
+    stations_validation
+  end
+
+  private
+
+  def stations_validation
+    stations.each(&:validate)
   end
 end
