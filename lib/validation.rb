@@ -27,7 +27,9 @@ module Validation
   end
 
   module InstanceMethods
-    def validate!; end
+    def validate!
+      self.validate
+    end
 
     def valid?
       validate
