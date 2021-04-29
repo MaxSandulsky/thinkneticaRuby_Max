@@ -9,9 +9,12 @@ class Route
 
   strong_attr_accessor(type: 'Station', name: 'stations')
 
+  validate :stations, :array_type, :Station
+  
   def initialize(stations = [])
     @stations = stations
 
+    self.validate!
     self.class.add_instance(self)
   end
 
@@ -39,15 +42,5 @@ class Route
     titles = []
     stations.each { |x| titles << x.title }
     titles
-  end
-
-  def validate
-    stations_validation
-  end
-
-  private
-
-  def stations_validation
-    stations.each(&:validate)
   end
 end

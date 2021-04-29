@@ -2,4 +2,6 @@
 # To change this template file, choose Tools | Templates
 # and open the template in the editor.
 
-module Manufacturer; attr_accessor :manufacturer, :number, :wagons_type; end
+module Manufacturer
+  attr_accessor :manufacturer, :number, :wagons_type
+end

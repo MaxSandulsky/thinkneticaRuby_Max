@@ -10,7 +10,7 @@ class RailRoad
   include Validation
 
   attr_accessor :stations_pool, :routes_pool
-
+  
   def initialize; end
 
   def menu
@@ -127,14 +127,14 @@ class RailRoad
   end
 
   def create_cargo_wagon
-    CargoWagon.new(gets.chomp, gets.chomp)
+    CargoWagon.new(gets.chomp, gets.chomp, gets.to_i)
   rescue RuntimeError => e
     puts e.inspect
     create_cargo_wagon
   end
 
   def create_passenger_wagon
-    PassengerWagon.new(gets.chomp, gets.chomp)
+    PassengerWagon.new(gets.chomp, gets.chomp, gets.to_i)
   rescue RuntimeError => e
     puts e.inspect
     create_passenger_wagon
@@ -164,10 +164,8 @@ class RailRoad
   def create_route
     puts 'Select first station!'
     first_station = station_selection
-    first_station.validate
     puts '#Select Second station!'
     second_station = station_selection
-    second_station.validate
     routes_pool.push(Route.new([first_station, second_station]))
   rescue RuntimeError => e
     puts e.inspect
@@ -192,7 +190,6 @@ class RailRoad
   def wagon_mount
     wagon = wagon_selection
     train = train_selection
-    wagon.validate
     train.wagon_connect(wagon)
   rescue RuntimeError => e
     puts e.inspect
@@ -202,7 +199,6 @@ class RailRoad
   def wagon_unmount
     wagon = wagon_selection
     train = train_selection
-    wagon.validate
     train.wagon_disconnect(wagon)
   rescue RuntimeError => e
     puts e.inspect
@@ -212,7 +208,7 @@ class RailRoad
   def train_selection
     trains_list
     train = Train.find_inst(gets.chomp)
-    train.validate
+    nil_validation(train)
     train
   rescue RuntimeError => e
     puts e.inspect
@@ -222,7 +218,7 @@ class RailRoad
   def wagon_selection
     wagons_list
     wagon = Wagon.find_inst(gets.chomp)
-    wagon.validate
+    nil_validation(wagon)
     wagon
   rescue RuntimeError => e
     puts e.inspect
@@ -233,7 +229,7 @@ class RailRoad
     stations_list
     return if (input = gets.to_i - 1) < 0
     station = stations_pool[input]
-    station.validate
+    nil_validation(station)
     station
   rescue RuntimeError => e
     puts e.inspect
@@ -244,7 +240,7 @@ class RailRoad
     routes_list
     return if (input = gets.to_i - 1) < 0
     route = routes_pool[input]
-    route.validate
+    nil_validation(route)
     route
   rescue RuntimeError => e
     puts e.inspect
@@ -297,7 +293,7 @@ class RailRoad
       train.train_route = train.route
     end
   rescue NoMethodError
-    puts 'No route'
+    puts 'No route or train'
   end
 
   def train_move_backward(train)
@@ -307,7 +303,7 @@ class RailRoad
       train.train_route = train.route
     end
   rescue NoMethodError
-    puts 'No route'
+    puts 'No route or train'
   end
 
   def informant(input)
@@ -329,22 +325,14 @@ class RailRoad
   end
 
   def remove_station_from_the_route
-    route = route_selection
-    station = station_selection
-    route.validate
-    station.validate
-    route.del_station(station)
+    route_selection.del_station(station_selection)
   rescue RuntimeError => e
     puts e.inspect
     remove_station_from_the_route
   end
 
   def add_station_to_the_route
-    route = route_selection
-    station = station_selection
-    route.validate
-    station.validate
-    route.add_station(station)
+    route_selection.add_station(station_selection)
   rescue RuntimeError => e
     puts e.inspect
     add_station_to_the_route

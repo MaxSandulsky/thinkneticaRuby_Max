@@ -11,11 +11,23 @@ class Train
 
   attr_reader :route
   attr_accessor_with_history :speed
-
+  
+  def self.inherited(subclass)
+    subclass.instance_eval do
+      validate :number, :format, NUMBER_FORMAT
+      validate :wagons, :array_type, :PassengerWagon #subclass.wagons_type
+      validate :manufacturer, :presence
+    end
+  end
+  
   def initialize(number, manufacturer)
     self.manufacturer = manufacturer
     self.number = number
     self.speed = 0
+    self.wagons = []
+    self.route = nil
+    
+    self.validate!
     register_instance
   end
 
@@ -45,45 +57,32 @@ class Train
 
   def train_route=(route_set)
     self.route = route_set
-    route.validate
     self.current_station_index = 0
     current_station.arriving_train(self)
   end
 
   def move_forward
-    route.validate
     current_station.departure_train(self)
     @current_station_index += 1
     current_station.arriving_train(self)
   end
 
   def move_backward
-    route.validate
     current_station.departure_train(self)
     @current_station_index -= 1
     current_station.arriving_train(self)
   end
 
   def current_station
-    route.validate
     route.stations[@current_station_index]
   end
 
   def passed_station
-    route.validate
     route.stations[@current_station_index - 1]
   end
 
   def next_station
-    route.validate
     route.stations[@current_station_index + 1]
-  end
-
-  def validate
-    speed_validation
-    current_station_index_validation
-    wagons_validation
-    manufacturer_validation
   end
 
   private
@@ -92,26 +91,4 @@ class Train
   attr_accessor :current_station_index
   strong_attr_accessor(type: 'Wagon', name: 'wagons')
 
-  def speed_validation
-    self.class.validate(obj: speed, val: 'presence')
-    self.class.validate(obj: speed, val: 'type', type: Integer)
-  end
-
-  def current_station_index_validation
-    self.class.validate(obj: current_station_index, val: 'presence')
-    self.class.validate(obj: current_station_index, val: 'type', type: Integer)
-  end
-
-  def wagons_validation
-    wagons.each do |wagon|
-      self.class.validate(obj: wagon, val: 'presence')
-      self.class.validate(obj: wagon.number, val: 'format', reg: NUMBER_FORMAT)
-      self.class.validate(obj: wagon, val: 'type', type: PassengerWagon)
-    end
-  end
-
-  def manufacturer_validation
-    self.class.validate(obj: manufacturer, val: 'presence')
-    self.class.validate(obj: manufacturer, val: 'type', type: String)
-  end
 end
