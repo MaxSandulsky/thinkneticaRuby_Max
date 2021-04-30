@@ -9,7 +9,7 @@ class Route
 
   strong_attr_accessor(type: 'Station', name: 'stations')
 
-  validate :stations, :array_type, :Station
+  validate(:var => 'stations', :val => 'array_type', :arg => 'Station')
   
   def initialize(stations = [])
     @stations = stations

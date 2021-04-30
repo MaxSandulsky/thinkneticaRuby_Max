@@ -14,9 +14,9 @@ class Train
   
   def self.inherited(subclass)
     subclass.instance_eval do
-      validate :number, :format, NUMBER_FORMAT
-      validate :wagons, :array_type, :PassengerWagon #subclass.wagons_type
-      validate :manufacturer, :presence
+      validate(:var => 'manufacturer', :val => 'presence')
+      validate(:var => 'number', :val => 'format', :arg => NUMBER_FORMAT)
+      validate(:var => 'wagons', :val => 'array_type', :arg => 'PassengerWagon')
     end
   end
   

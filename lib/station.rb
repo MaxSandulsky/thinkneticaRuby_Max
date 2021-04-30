@@ -7,8 +7,8 @@ class Station
 
   attr_reader :title, :trains
 
-  validate :title, :format, TITLE_FORMAT
-  validate :trains, :array_type, :PassengerTrain
+  validate(:var => 'title', :val => 'format', :arg => TITLE_FORMAT)
+  validate(:var => 'trains', :val => 'array_type', :arg => 'PassengerTrain')
   
   def initialize(title)
     @trains = []

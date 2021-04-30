@@ -227,8 +227,8 @@ class RailRoad
 
   def station_selection
     stations_list
-    return if (input = gets.to_i - 1) < 0
-    station = stations_pool[input]
+    input = gets.to_i - 1
+    station = stations_pool[input] if (input.to_i) >= 0
     nil_validation(station)
     station
   rescue RuntimeError => e

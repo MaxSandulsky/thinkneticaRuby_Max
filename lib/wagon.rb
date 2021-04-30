@@ -21,10 +21,9 @@ class Wagon
   def self.inherited(subclass)
     subclass.class_eval do
       attr_reader :max_space
-      
-      validate :number, :format, NUMBER_FORMAT
-      validate :manufacturer, :presence
-      validate :max_space, :presence
+      validate(:var => 'manufacturer', :val => 'presence')
+      validate(:var => 'number', :val => 'format', :arg => NUMBER_FORMAT)
+      validate(:var => 'max_space', :val => 'presence')
       
       def take_space(cell_number)
         return if free_space <= 0
