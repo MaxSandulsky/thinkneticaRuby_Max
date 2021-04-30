@@ -17,20 +17,6 @@ module Validation
     def validate(args)
       @validations ||= []
       @validations.push(args)
-
-      
-      
-      
-#      val_lambda = type_validation(@attribute, @arguments.to_s) if @validation == 'type'
-#      val_lambda = presence_validation(@attribute) if @validation == 'presence'
-#      val_lambda = format_validation(@attribute, @arguments) if @validation == 'format'
-#      val_lambda = array_type_var_validation(@attribute, @arguments.to_s) if @validation == 'array_type'
-#      
-#      val_array = instance_variable_get('@validation_methods'.to_sym)
-#      val_array ||= []
-#      val_array = val_array + Array(val_lambda)
-#      
-#      instance_variable_set('@validation_methods'.to_sym, val_array)
     end
 
     def type_validation(attribute, type, obj)
