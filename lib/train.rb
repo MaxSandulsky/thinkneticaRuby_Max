@@ -1,49 +1,76 @@
+require_relative 'manufacturer.rb'
+require_relative 'instance_counter.rb'
+require_relative 'validation.rb'
+require_relative 'accessors.rb'
+
 class Train
-  attr_reader :speed, :wagons, :number, :type, :route
+  include Manufacturer
+  include InstanceCounter
+  include Validation
+  extend Accessors
 
-  def initialize(number, type, wagons)
-    @number = number
-    @type = type
-    @wagons = wagons
+  attr_reader :route
+  attr_accessor_with_history :speed
+  
+  def self.inherited(subclass)
+    subclass.instance_eval do
+      validate(:var => 'manufacturer', :val => 'presence')
+      validate(:var => 'number', :val => 'format', :arg => NUMBER_FORMAT)
+      validate(:var => 'wagons', :val => 'array_type', :arg => 'PassengerWagon')
+    end
+  end
+  
+  def initialize(number, manufacturer)
+    self.manufacturer = manufacturer
+    self.number = number
+    self.speed = 0
+    self.wagons = []
+    self.route = nil
+    
+    self.validate!
+    register_instance
   end
 
-  def wagons_increase
-    @wagons += 1 if @speed == 0
+  def wagon_connect(wagon)
+    return unless speed.zero?
+    self.wagons ||= []
+    self.wagons = wagons + Array(wagon)
   end
 
-  def wagons_decrease
-    @wagons -= 1 if @speed == 0
+  def wagon_disconnect(wagon)
+    return unless speed.zero?
+    return unless Array(wagons).include?(wagon)
+    wagons.delete(wagon)
+  end
+
+  def process_wagons
+    wagons.each { |wagon| yield(wagon) }
   end
 
   def speed_gain(velocity)
-    @speed += velocity
+    self.speed = speed + velocity
   end
 
   def stop
-    @speed = 0
+    self.speed = 0
   end
 
   def train_route=(route_set)
-    @route = route_set
-    @current_station_index = 0
+    self.route = route_set
+    self.current_station_index = 0
     current_station.arriving_train(self)
   end
 
   def move_forward
-    unless next_station.nil?
-      current_station.departure_train(self)
-      @current_station_index += 1
-      current_station.arriving_train(self)
-    end
+    current_station.departure_train(self)
+    @current_station_index += 1
+    current_station.arriving_train(self)
   end
 
   def move_backward
-    unless passed_station.nil?
-      # если мы стоим на первой станции, то passed_station = nil
-      current_station.departure_train(self)
-      @current_station_index -= 1
-      current_station.arriving_train(self)
-    end
+    current_station.departure_train(self)
+    @current_station_index -= 1
+    current_station.arriving_train(self)
   end
 
   def current_station
@@ -57,4 +84,11 @@ class Train
   def next_station
     route.stations[@current_station_index + 1]
   end
+
+  private
+
+  attr_writer :route
+  attr_accessor :current_station_index
+  strong_attr_accessor(type: 'Wagon', name: 'wagons')
+
 end

@@ -1,22 +1,46 @@
+require_relative 'instance_counter.rb'
+require_relative 'validation.rb'
+require_relative 'accessors.rb'
+
 class Route
-  # #Я понял свою ошибку, в тексте курса было сказано, что объединять надо только после выполнения задания, но Я думал, чтобы создать новый PR, надо принять старый.
-  # И Я вносил исправления, а потом когда хотел создать новый ответ, объединял ветки) больше так не буду.
-  attr_reader :first, :last, :intermediate_stations
-  def initialize(first, last, *intermediate_stations)
-    @first = first
-    @last = last
-    @intermediate_stations = intermediate_stations
+  include InstanceCounter
+  include Validation
+  extend Accessors
+
+  strong_attr_accessor(type: 'Station', name: 'stations')
+
+  validate(:var => 'stations', :val => 'array_type', :arg => 'Station')
+  
+  def initialize(stations = [])
+    @stations = stations
+
+    self.validate!
+    self.class.add_instance(self)
   end
 
   def add_station(adding, possition = 1)
-    @intermediate_stations.insert(possition, adding)
+    stations.insert(possition, adding)
   end
 
   def del_station(removing)
-    @intermediate_stations.delete(removing)
+    stations.delete(removing)
   end
 
-  def stations
-    [first, *intermediate_stations, last]
+  def route_reverse
+    stations.reverse!
+  end
+
+  def origination
+    stations.first
+  end
+
+  def destination
+    stations.last
+  end
+
+  def station_titles
+    titles = []
+    stations.each { |x| titles << x.title }
+    titles
   end
 end
